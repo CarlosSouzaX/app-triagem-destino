@@ -79,25 +79,21 @@ if len(st.session_state["respostas"]) < len(perguntas):
 
 respostas = st.session_state["respostas"]
 
-# Mostrar perguntas anteriores
-for i in range(progresso):
-    st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
-    st.write(f"Resposta: {respostas[i]}")
+# Exibir perguntas anteriores
+if progresso > 0:
+    for i in range(progresso):
+        st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
+        st.write(f"Resposta: {respostas[i]}")
 
 # Exibir a próxima pergunta
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
 
-    # Determinar o índice da resposta no st.radio
-    if respostas[progresso] in ["sim", "não"]:
-        resposta_index = ["sim", "não"].index(respostas[progresso])
-    else:
-        resposta_index = -1  # Nenhuma resposta selecionada inicialmente
-
+    # Exibir pergunta atual sem resposta pré-selecionada
     resposta = st.radio(
         pergunta_atual["texto"],
         options=["sim", "não"],
-        index=0 if resposta_index == -1 else resposta_index,
+        index=-1,  # Nenhuma opção selecionada inicialmente
         key=f"pergunta_{progresso}"
     )
 
@@ -105,7 +101,7 @@ if progresso < len(perguntas):
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
-        # Interromper fluxo para perguntas de corte
+        # Finalizar se for uma pergunta de corte
         if pergunta_atual["corte"] and resposta == "sim":
             destino = decidir_destino(entrada_atual, respostas[:progresso + 1])
             st.success(f"O destino recomendado é: {destino}")
