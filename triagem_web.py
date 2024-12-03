@@ -34,15 +34,15 @@ if entrada_atual != st.session_state["entrada_selecionada"]:
 if entrada_atual in entradas:
     pergunta = entradas[entrada_atual]["pergunta"]
     
-    # Exibir pergunta sem nenhuma opção selecionada
+    # Adicionar placeholder "Escolha uma opção"
     resposta = st.radio(
         pergunta,
-        options=["sim", "não"],
-        index=-1,  # Nenhuma opção selecionada inicialmente
+        options=["Escolha uma opção", "sim", "não"],
+        index=0,  # Sempre começa com o placeholder selecionado
         key=f"pergunta_{entrada_atual}"
     )
     
-    if resposta:
+    if resposta != "Escolha uma opção":
         st.session_state["resposta"] = resposta
         # Determinar a saída com base na resposta
         saida = entradas[entrada_atual]["saida_sim"] if resposta == "sim" else entradas[entrada_atual]["saida_nao"]
