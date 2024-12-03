@@ -57,7 +57,7 @@ if entrada_atual in entradas:
             st.write(f"Resposta: {resposta}")
 
     # Exibir a próxima pergunta
-    if progresso < len(perguntas):
+    if progresso < len(perguntas) and not st.session_state["saida"]:
         pergunta_atual = perguntas[progresso]
         st.write(f"**Pergunta {progresso + 1}: {pergunta_atual['texto']}**")
 
@@ -68,23 +68,21 @@ if entrada_atual in entradas:
                 # Define o destino imediato, se aplicável
                 if pergunta_atual["resposta_sim"]:
                     st.session_state["saida"] = pergunta_atual["resposta_sim"]
-                    st.rerun()
                 else:
                     st.session_state["progresso"] += 1
-                    st.rerun()
+                st.rerun()
         with col2:
             if st.button("Não", key=f"nao_{progresso}"):
                 st.session_state["respostas"].append("não")
                 # Define o destino imediato, se aplicável
                 if pergunta_atual["resposta_nao"]:
                     st.session_state["saida"] = pergunta_atual["resposta_nao"]
-                    st.rerun()
                 else:
                     st.session_state["progresso"] += 1
-                    st.rerun()
+                st.rerun()
 
-    # Exibir saída final após responder todas as perguntas
-    elif st.session_state["saida"]:
+    # Exibir saída final
+    if st.session_state["saida"]:
         st.success(f"Destino Final: {st.session_state['saida']}")
-    else:
+    elif progresso == len(perguntas):
         st.error("Nenhum destino definido para as respostas fornecidas.")
