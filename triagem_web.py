@@ -33,18 +33,20 @@ if entrada_atual != st.session_state["entrada_selecionada"]:
 # Mostrar a pergunta correspondente
 if entrada_atual in entradas:
     pergunta = entradas[entrada_atual]["pergunta"]
-    
-    # Adicionar placeholder "Escolha uma opção"
-    resposta = st.radio(
-        pergunta,
-        options=["Escolha uma opção", "sim", "não"],
-        index=0,  # Sempre começa com o placeholder selecionado
-        key=f"pergunta_{entrada_atual}"
-    )
-    
-    if resposta != "Escolha uma opção":
-        st.session_state["resposta"] = resposta
-        # Determinar a saída com base na resposta
+    st.write(f"**{pergunta}**")
+
+    # Botões para seleção de "sim" ou "não"
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Sim"):
+            st.session_state["resposta"] = "sim"
+    with col2:
+        if st.button("Não"):
+            st.session_state["resposta"] = "não"
+
+    # Processar resposta
+    if st.session_state["resposta"]:
+        resposta = st.session_state["resposta"]
         saida = entradas[entrada_atual]["saida_sim"] if resposta == "sim" else entradas[entrada_atual]["saida_nao"]
         st.session_state["saida"] = saida
         st.success(f"Resposta: {resposta} → {saida}")
