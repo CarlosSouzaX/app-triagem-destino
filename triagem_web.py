@@ -33,14 +33,18 @@ entradas = {
     },
 }
 
-# Função para decidir o destino com base nas respostas
 def decidir_destino(entrada, respostas):
+    """
+    Decide o destino com base na entrada e nas respostas.
+    """
     dados = entradas.get(entrada)
     respostas_tuple = tuple(respostas)
     return dados["decisoes"].get(respostas_tuple, "Destino não definido")
 
-# Função para resetar o formulário
 def reset_form():
+    """
+    Reseta o estado do formulário para permitir nova submissão.
+    """
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
 
@@ -81,10 +85,15 @@ if progresso < len(perguntas):
     resposta = st.radio(
         pergunta_atual["texto"], 
         options=["sim", "não"], 
-        key=f"pergunta_{progresso}"
+        key=f"pergunta_{progresso}",
+        index=0 if respostas[progresso] is not None else -1,  # Nenhuma opção selecionada inicialmente
+        label_visibility="visible"  # Sempre mostra a pergunta
     )
     if resposta:
-        respostas.append(resposta)
+        if progresso < len(respostas):
+            respostas[progresso] = resposta
+        else:
+            respostas.append(resposta)
         st.session_state["respostas"] = respostas
 
         # Interromper fluxo se pergunta de corte for respondida com "sim"
@@ -99,8 +108,6 @@ if progresso < len(perguntas):
 if progresso > 0:
     if st.button("Voltar"):
         st.session_state["progresso"] -= 1
-        respostas.pop()
-        st.session_state["respostas"] = respostas
 
 # Mostrar botão Enviar quando todas as perguntas forem respondidas
 if progresso == len(perguntas):
