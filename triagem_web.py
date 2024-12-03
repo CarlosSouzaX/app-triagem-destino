@@ -17,7 +17,7 @@ entradas = {
     "RunOff": {
         "perguntas": [
             "O produto está dentro da garantia?",
-            "Há defeitos funcionais???"
+            "Há defeitos funcionais?"
         ],
         "decisoes": {
             ("sim", "não"): "AT Same",
@@ -59,14 +59,21 @@ entrada_selecionada = st.selectbox(
 if entrada_selecionada:
     perguntas = entradas[entrada_selecionada]["perguntas"]
 
-    # Controle do progresso: Quantas perguntas foram respondidas
+    # Inicializa o progresso e as respostas, se necessário
     if "progresso" not in st.session_state:
         st.session_state["progresso"] = 0
     if "respostas" not in st.session_state:
         st.session_state["respostas"] = [None] * len(perguntas)
 
-    # Mostra perguntas dinamicamente
     progresso = st.session_state["progresso"]
+    respostas = st.session_state["respostas"]
+
+    # Exibir todas as perguntas respondidas até o momento
+    for i in range(progresso):
+        st.write(f"**Pergunta {i + 1}: {perguntas[i]}**")
+        st.write(f"Resposta: {respostas[i]}")
+
+    # Mostrar a pergunta atual
     if progresso < len(perguntas):
         resposta = st.radio(
             perguntas[progresso], 
@@ -74,12 +81,18 @@ if entrada_selecionada:
             key=f"pergunta_{progresso}"
         )
         if resposta:
-            st.session_state["respostas"][progresso] = resposta
+            respostas[progresso] = resposta
             st.session_state["progresso"] += 1
+            st.session_state["respostas"] = respostas
+
+    # Botão "Voltar" para ajustar respostas anteriores
+    if progresso > 0:
+        if st.button("Voltar"):
+            st.session_state["progresso"] -= 1
 
     # Mostrar botão Enviar quando todas as perguntas forem respondidas
     if progresso == len(perguntas):
         if st.button("Enviar"):
-            destino = decidir_destino(entrada_selecionada, st.session_state["respostas"])
+            destino = decidir_destino(entrada_selecionada, respostas)
             st.success(f"O destino recomendado é: {destino}")
             reset_form()
