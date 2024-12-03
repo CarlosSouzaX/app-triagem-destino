@@ -74,6 +74,10 @@ perguntas = entradas[st.session_state["entrada_selecionada"]]["perguntas"]
 progresso = st.session_state["progresso"]
 respostas = st.session_state["respostas"]
 
+# Garantir que o tamanho da lista de respostas seja suficiente
+if len(respostas) < len(perguntas):
+    respostas.extend([None] * (len(perguntas) - len(respostas)))
+
 # Exibir perguntas respondidas anteriormente
 for i in range(progresso):
     st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
@@ -85,15 +89,12 @@ if progresso < len(perguntas):
     resposta = st.radio(
         pergunta_atual["texto"], 
         options=["sim", "não"], 
+        index=-1 if respostas[progresso] is None else ["sim", "não"].index(respostas[progresso]),  # Nenhuma opção selecionada inicialmente
         key=f"pergunta_{progresso}",
-        index=0 if respostas[progresso] is not None else -1,  # Nenhuma opção selecionada inicialmente
         label_visibility="visible"  # Sempre mostra a pergunta
     )
     if resposta:
-        if progresso < len(respostas):
-            respostas[progresso] = resposta
-        else:
-            respostas.append(resposta)
+        respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
         # Interromper fluxo se pergunta de corte for respondida com "sim"
