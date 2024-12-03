@@ -49,7 +49,7 @@ if entrada_atual in entradas:
     # Exibir perguntas respondidas
     if progresso > 0:
         st.write("### Perguntas Respondidas")
-        for i in range(progresso):
+        for i in range(min(progresso, len(st.session_state["respostas"]))):
             pergunta = perguntas[i]["texto"]
             resposta = st.session_state["respostas"][i]
             st.write(f"**{i + 1}. {pergunta}**")
