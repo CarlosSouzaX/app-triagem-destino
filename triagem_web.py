@@ -5,7 +5,7 @@ entradas = {
     "Análise Meli": {
         "perguntas": [
             {"texto": "O device é da marca Xiaomi ou Apple?", "resposta_sim": None, "resposta_nao": None, "proxima_pergunta_sim": 1, "proxima_pergunta_nao": 2},
-            {"texto": "O Mi/FMiP está Bloqueado??", "resposta_sim": "Rejeitar SR", "resposta_nao": None, "proxima_pergunta_sim": None, "proxima_pergunta_nao": 3},
+            {"texto": "O Mi/FMiP está Bloqueado??", "resposta_sim": "Rejeitar SR", "resposta_nao": None, "proxima_pergunta_sim": None, "proxima_pergunta_nao": 2},
             {"texto": "Há danos estéticos?", "resposta_sim": "Saída 2", "resposta_nao": "Saída 3", "proxima_pergunta_sim": None, "proxima_pergunta_nao": None}
         ]
     },
