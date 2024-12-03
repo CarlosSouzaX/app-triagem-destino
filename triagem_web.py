@@ -79,7 +79,7 @@ if len(st.session_state["respostas"]) < len(perguntas):
 
 respostas = st.session_state["respostas"]
 
-# Exibir perguntas anteriores
+# Mostrar perguntas anteriores
 for i in range(progresso):
     st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
     st.write(f"Resposta: {respostas[i]}")
@@ -88,15 +88,16 @@ for i in range(progresso):
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
 
-    # Exibir a pergunta atual
+    # Adicionar uma opção placeholder "Selecione uma opção"
+    opcoes = ["Selecione uma opção", "sim", "não"]
     resposta = st.radio(
         pergunta_atual["texto"],
-        options=["sim", "não"],
-        index=-1 if respostas[progresso] is None else ["sim", "não"].index(respostas[progresso]),
+        options=opcoes,
+        index=0,  # Sempre começar com o placeholder selecionado
         key=f"pergunta_{progresso}"
     )
 
-    if resposta:
+    if resposta != "Selecione uma opção":
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
