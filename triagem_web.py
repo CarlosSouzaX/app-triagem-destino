@@ -92,19 +92,15 @@ if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
 
     # Verificar o índice inicial da resposta no st.radio
-    if respostas[progresso] is None:
-        resposta_index = -1  # Nenhuma resposta selecionada
-    else:
-        resposta_index = ["sim", "não"].index(respostas[progresso])
-
     resposta = st.radio(
         pergunta_atual["texto"],
         options=["sim", "não"],
-        index=0 if resposta_index == -1 else resposta_index,
+        index=0 if respostas[progresso] == "sim" else (1 if respostas[progresso] == "não" else -1),
         key=f"pergunta_{progresso}"
     )
 
     if resposta:
+        # Atualizar a resposta e progresso
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
@@ -115,12 +111,14 @@ if progresso < len(perguntas):
             reset_form()
         else:
             st.session_state["progresso"] += 1
+            st.experimental_rerun()  # Forçar atualização para avançar
 
 # Botão "Voltar" para ajustar respostas
 if progresso > 0:
     if st.button("Voltar"):
         st.session_state["progresso"] -= 1
         st.session_state["respostas"][progresso - 1] = None
+        st.experimental_rerun()
 
 # Mostrar botão Enviar ao final
 if progresso == len(perguntas):
