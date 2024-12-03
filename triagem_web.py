@@ -33,21 +33,14 @@ entradas = {
     },
 }
 
+# Função para decidir o destino com base nas respostas
 def decidir_destino(entrada, respostas):
-    """
-    Decide o destino com base na entrada e nas respostas.
-    """
     dados = entradas.get(entrada)
-    if not dados:
-        return "Entrada inválida"
-    
     respostas_tuple = tuple(respostas)
     return dados["decisoes"].get(respostas_tuple, "Destino não definido")
 
+# Função para resetar o formulário
 def reset_form():
-    """
-    Reseta o estado do formulário para permitir nova submissão.
-    """
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
 
@@ -67,7 +60,7 @@ entrada_atual = st.selectbox(
     index=0 if st.session_state["entrada_selecionada"] is None else list(entradas.keys()).index(st.session_state["entrada_selecionada"])
 )
 
-# Se a entrada mudou, resetar progresso e respostas
+# Resetar progresso ao mudar a entrada
 if entrada_atual != st.session_state["entrada_selecionada"]:
     st.session_state["entrada_selecionada"] = entrada_atual
     reset_form()
@@ -77,7 +70,7 @@ perguntas = entradas[st.session_state["entrada_selecionada"]]["perguntas"]
 progresso = st.session_state["progresso"]
 respostas = st.session_state["respostas"]
 
-# Mostrar perguntas respondidas anteriormente
+# Exibir perguntas respondidas anteriormente
 for i in range(progresso):
     st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
     st.write(f"Resposta: {respostas[i]}")
@@ -88,14 +81,13 @@ if progresso < len(perguntas):
     resposta = st.radio(
         pergunta_atual["texto"], 
         options=["sim", "não"], 
-        key=f"pergunta_{progresso}",
-        label_visibility="visible"  # Mostra o rótulo da pergunta
+        key=f"pergunta_{progresso}"
     )
     if resposta:
         respostas.append(resposta)
         st.session_state["respostas"] = respostas
 
-        # Se a pergunta é um "corte" e a resposta for "sim", interrompe o fluxo
+        # Interromper fluxo se pergunta de corte for respondida com "sim"
         if pergunta_atual["corte"] and resposta == "sim":
             destino = decidir_destino(entrada_atual, respostas)
             st.success(f"O destino recomendado é: {destino}")
@@ -103,7 +95,7 @@ if progresso < len(perguntas):
         else:
             st.session_state["progresso"] += 1
 
-# Botão "Voltar" para ajustar respostas anteriores
+# Botão "Voltar" para corrigir respostas anteriores
 if progresso > 0:
     if st.button("Voltar"):
         st.session_state["progresso"] -= 1
