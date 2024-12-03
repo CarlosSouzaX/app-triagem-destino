@@ -5,7 +5,7 @@ entradas = {
     "Análise Meli": {
         "perguntas": [
             "O produto está funcional?",
-            "Há danos estéticos de qual ordem?"
+            "Há danos estéticos?"
         ],
         "decisoes": {
             ("sim", "não"): "AT LN",
@@ -40,13 +40,9 @@ def decidir_destino(entrada, respostas):
     respostas_tuple = tuple(respostas)
     return dados["decisoes"].get(respostas_tuple, "Destino não definido")
 
+# Função para resetar o formulário
 def reset_form():
-    """
-    Reseta o estado do formulário para permitir nova submissão.
-    """
-    for key in st.session_state.keys():
-        if "pergunta" in key or key == "entrada_selecionada":
-            del st.session_state[key]
+    st.session_state.clear()
 
 # Interface Streamlit
 st.title("Sistema de Triagem de Produtos")
@@ -60,22 +56,29 @@ entrada_selecionada = st.selectbox(
 
 if entrada_selecionada:
     perguntas = entradas[entrada_selecionada]["perguntas"]
-    respostas = []
 
-    # Loop para todas as perguntas na mesma página
+    # Controle do progresso: Quantas perguntas foram respondidas
+    if "progresso" not in st.session_state:
+        st.session_state["progresso"] = 0
+
+    respostas = st.session_state.get("respostas", [])
+
+    # Mostra perguntas dinamicamente
     for i, pergunta in enumerate(perguntas):
-        resposta = st.radio(
-            pergunta,
-            options=["sim", "não"],
-            key=f"pergunta_{i}"
-        )
-        respostas.append(resposta)
+        if i < st.session_state["progresso"]:
+            st.write(f"{pergunta} - Resposta: {respostas[i]}")
+        elif i == st.session_state["progresso"]:
+            resposta = st.radio(pergunta, options=["sim", "não"], key=f"pergunta_{i}")
+            if resposta:
+                respostas.append(resposta)
+                st.session_state["progresso"] += 1
+                st.session_state["respostas"] = respostas
+                st.experimental_rerun()
+            break
 
-    # Botão de envio
-    if st.button("Enviar"):
-        if None in respostas:
-            st.warning("Responda todas as perguntas antes de enviar.")
-        else:
+    # Mostrar botão Enviar quando todas as perguntas forem respondidas
+    if st.session_state["progresso"] == len(perguntas):
+        if st.button("Enviar"):
             destino = decidir_destino(entrada_selecionada, respostas)
             st.success(f"O destino recomendado é: {destino}")
-            reset_form()  # Reseta o formulário após o envio
+            reset_form()
