@@ -47,12 +47,10 @@ def reset_form():
     """
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
-    st.session_state["ultima_entrada"] = None
 
 # Inicialização do estado
 if "entrada_selecionada" not in st.session_state:
     st.session_state["entrada_selecionada"] = None
-    st.session_state["ultima_entrada"] = None
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
 
@@ -67,18 +65,17 @@ entrada_atual = st.selectbox(
 )
 
 # Resetar o estado ao mudar a entrada
-if entrada_atual != st.session_state["ultima_entrada"]:
+if entrada_atual != st.session_state["entrada_selecionada"]:
     st.session_state["entrada_selecionada"] = entrada_atual
-    st.session_state["ultima_entrada"] = entrada_atual
     reset_form()
 
-# Recuperar progresso e perguntas
+# Recuperar perguntas e progresso
 perguntas = entradas[st.session_state["entrada_selecionada"]]["perguntas"]
 progresso = st.session_state["progresso"]
 
-# Garantir sincronização da lista de respostas com as perguntas
-if "respostas" not in st.session_state or len(st.session_state["respostas"]) != len(perguntas):
-    st.session_state["respostas"] = [None] * len(perguntas)
+# Garantir que a lista de respostas esteja sincronizada com o número de perguntas
+if len(st.session_state["respostas"]) < len(perguntas):
+    st.session_state["respostas"].extend([None] * (len(perguntas) - len(st.session_state["respostas"])))
 
 respostas = st.session_state["respostas"]
 
@@ -90,8 +87,6 @@ for i in range(progresso):
 # Exibir a próxima pergunta
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
-
-    # Verificar o índice inicial da resposta no st.radio
     resposta = st.radio(
         pergunta_atual["texto"],
         options=["sim", "não"],
@@ -100,7 +95,6 @@ if progresso < len(perguntas):
     )
 
     if resposta:
-        # Atualizar a resposta e progresso
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
@@ -111,7 +105,7 @@ if progresso < len(perguntas):
             reset_form()
         else:
             st.session_state["progresso"] += 1
-            st.experimental_rerun()  # Forçar atualização para avançar
+            st.experimental_rerun()
 
 # Botão "Voltar" para ajustar respostas
 if progresso > 0:
