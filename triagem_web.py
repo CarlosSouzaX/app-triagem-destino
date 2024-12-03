@@ -53,14 +53,14 @@ if entrada_atual == "Entrada 1":
                 if pergunta_atual["resposta_sim"]:
                     st.session_state["saida"] = pergunta_atual["resposta_sim"]
                 st.session_state["progresso"] += 1
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Não", key=f"nao_{progresso}"):
                 st.session_state["respostas"].append("não")
                 if pergunta_atual["resposta_nao"]:
                     st.session_state["saida"] = pergunta_atual["resposta_nao"]
                 st.session_state["progresso"] += 1
-                st.experimental_rerun()
+                st.rerun()
 
     # Exibir saída final após responder todas as perguntas
     if st.session_state["progresso"] == len(perguntas):
@@ -78,11 +78,11 @@ elif entrada_atual in entradas:
     with col1:
         if st.button("Sim"):
             st.session_state["saida"] = entradas[entrada_atual]["saida_sim"]
-            st.experimental_rerun()
+            st.rerun()
     with col2:
         if st.button("Não"):
             st.session_state["saida"] = entradas[entrada_atual]["saida_nao"]
-            st.experimental_rerun()
+            st.rerun()
 
 # Exibir saída final para entradas com uma pergunta
 if st.session_state["saida"] and entrada_atual != "Entrada 1":
