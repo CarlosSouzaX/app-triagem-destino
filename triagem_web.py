@@ -33,6 +33,7 @@ entradas = {
     },
 }
 
+# Funções auxiliares
 def decidir_destino(entrada, respostas):
     """
     Decide o destino com base na entrada e nas respostas.
@@ -47,6 +48,7 @@ def reset_form():
     """
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
+    st.session_state["ultima_entrada"] = None
 
 # Interface Streamlit
 st.title("Sistema de Triagem de Produtos")
@@ -54,6 +56,7 @@ st.title("Sistema de Triagem de Produtos")
 # Inicialização do estado
 if "entrada_selecionada" not in st.session_state:
     st.session_state["entrada_selecionada"] = None
+    st.session_state["ultima_entrada"] = None
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
 
@@ -65,8 +68,9 @@ entrada_atual = st.selectbox(
 )
 
 # Resetar progresso ao mudar a entrada
-if entrada_atual != st.session_state["entrada_selecionada"]:
+if entrada_atual != st.session_state["ultima_entrada"]:
     st.session_state["entrada_selecionada"] = entrada_atual
+    st.session_state["ultima_entrada"] = entrada_atual
     reset_form()
 
 # Recuperar perguntas e progresso
@@ -86,19 +90,22 @@ for i in range(progresso):
 # Exibir a próxima pergunta
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
+    resposta_index = -1 if respostas[progresso] is None else ["sim", "não"].index(respostas[progresso])
+    
     resposta = st.radio(
         pergunta_atual["texto"], 
         options=["sim", "não"], 
-        index=-1 if respostas[progresso] is None else ["sim", "não"].index(respostas[progresso]),  # Garante índice válido
+        index=resposta_index,  # Garante índice válido
         key=f"pergunta_{progresso}"
     )
+
     if resposta:
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
         # Interromper fluxo se pergunta de corte for respondida com "sim"
         if pergunta_atual["corte"] and resposta == "sim":
-            destino = decidir_destino(entrada_atual, respostas)
+            destino = decidir_destino(entrada_atual, respostas[:progresso + 1])
             st.success(f"O destino recomendado é: {destino}")
             reset_form()
         else:
@@ -108,6 +115,8 @@ if progresso < len(perguntas):
 if progresso > 0:
     if st.button("Voltar"):
         st.session_state["progresso"] -= 1
+        respostas[progresso - 1] = None
+        st.session_state["respostas"] = respostas
 
 # Mostrar botão Enviar quando todas as perguntas forem respondidas
 if progresso == len(perguntas):
