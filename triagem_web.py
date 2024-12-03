@@ -89,11 +89,10 @@ if progresso < len(perguntas):
         pergunta_atual["texto"], 
         options=["sim", "não"], 
         key=f"pergunta_{progresso}",
-        index=-1  # Nenhuma opção selecionada por padrão
+        label_visibility="visible"  # Mostra o rótulo da pergunta
     )
     if resposta:
         respostas.append(resposta)
-        st.session_state["progresso"] += 1
         st.session_state["respostas"] = respostas
 
         # Se a pergunta é um "corte" e a resposta for "sim", interrompe o fluxo
@@ -101,6 +100,8 @@ if progresso < len(perguntas):
             destino = decidir_destino(entrada_atual, respostas)
             st.success(f"O destino recomendado é: {destino}")
             reset_form()
+        else:
+            st.session_state["progresso"] += 1
 
 # Botão "Voltar" para ajustar respostas anteriores
 if progresso > 0:
