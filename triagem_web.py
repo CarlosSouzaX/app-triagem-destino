@@ -48,63 +48,70 @@ def reset_form():
     """
     Reseta o estado do formulário para permitir nova submissão.
     """
-    st.session_state.clear()
+    st.session_state["progresso"] = 0
+    st.session_state["respostas"] = []
 
 # Interface Streamlit
 st.title("Sistema de Triagem de Produtos")
 
+# Inicialização do estado
+if "entrada_selecionada" not in st.session_state:
+    st.session_state["entrada_selecionada"] = None
+    st.session_state["progresso"] = 0
+    st.session_state["respostas"] = []
+
 # Seleção da entrada
-entrada_selecionada = st.selectbox(
+entrada_atual = st.selectbox(
     "Selecione a Entrada", 
     options=list(entradas.keys()), 
-    key="entrada_selecionada"
+    index=0 if st.session_state["entrada_selecionada"] is None else list(entradas.keys()).index(st.session_state["entrada_selecionada"])
 )
 
-if entrada_selecionada:
-    perguntas = entradas[entrada_selecionada]["perguntas"]
+# Se a entrada mudou, resetar progresso e respostas
+if entrada_atual != st.session_state["entrada_selecionada"]:
+    st.session_state["entrada_selecionada"] = entrada_atual
+    reset_form()
 
-    # Inicializa o progresso e as respostas, se necessário
-    if "progresso" not in st.session_state:
-        st.session_state["progresso"] = 0
-    if "respostas" not in st.session_state:
-        st.session_state["respostas"] = [None] * len(perguntas)
+# Recuperar perguntas e progresso
+perguntas = entradas[st.session_state["entrada_selecionada"]]["perguntas"]
+progresso = st.session_state["progresso"]
+respostas = st.session_state["respostas"]
 
-    progresso = st.session_state["progresso"]
-    respostas = st.session_state["respostas"]
+# Mostrar perguntas respondidas anteriormente
+for i in range(progresso):
+    st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
+    st.write(f"Resposta: {respostas[i]}")
 
-    # Exibir perguntas anteriores e a atual
-    for i in range(progresso):
-        st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
-        st.write(f"Resposta: {respostas[i]}")
+# Exibir a próxima pergunta
+if progresso < len(perguntas):
+    pergunta_atual = perguntas[progresso]
+    resposta = st.radio(
+        pergunta_atual["texto"], 
+        options=["sim", "não"], 
+        key=f"pergunta_{progresso}",
+        index=-1  # Nenhuma opção selecionada por padrão
+    )
+    if resposta:
+        respostas.append(resposta)
+        st.session_state["progresso"] += 1
+        st.session_state["respostas"] = respostas
 
-    if progresso < len(perguntas):
-        pergunta_atual = perguntas[progresso]
-        resposta = st.radio(
-            pergunta_atual["texto"], 
-            options=["sim", "não"], 
-            key=f"pergunta_{progresso}"
-        )
-        if resposta:
-            respostas[progresso] = resposta
-            st.session_state["respostas"] = respostas
-
-            # Se a pergunta atual é um "corte" e a resposta for "sim", interrompe o fluxo
-            if pergunta_atual["corte"] and resposta == "sim":
-                st.session_state["progresso"] = len(perguntas)  # Marca todas as perguntas como respondidas
-                destino = decidir_destino(entrada_selecionada, respostas[:progresso + 1])
-                st.success(f"O destino recomendado é: {destino}")
-                reset_form()
-            else:
-                st.session_state["progresso"] += 1
-
-    # Botão "Voltar" para ajustar respostas anteriores
-    if progresso > 0:
-        if st.button("Voltar"):
-            st.session_state["progresso"] -= 1
-
-    # Mostrar botão Enviar quando todas as perguntas forem respondidas
-    if progresso == len(perguntas) and not perguntas[progresso - 1]["corte"]:
-        if st.button("Enviar"):
-            destino = decidir_destino(entrada_selecionada, respostas)
+        # Se a pergunta é um "corte" e a resposta for "sim", interrompe o fluxo
+        if pergunta_atual["corte"] and resposta == "sim":
+            destino = decidir_destino(entrada_atual, respostas)
             st.success(f"O destino recomendado é: {destino}")
             reset_form()
+
+# Botão "Voltar" para ajustar respostas anteriores
+if progresso > 0:
+    if st.button("Voltar"):
+        st.session_state["progresso"] -= 1
+        respostas.pop()
+        st.session_state["respostas"] = respostas
+
+# Mostrar botão Enviar quando todas as perguntas forem respondidas
+if progresso == len(perguntas):
+    if st.button("Enviar"):
+        destino = decidir_destino(entrada_atual, respostas)
+        st.success(f"O destino recomendado é: {destino}")
+        reset_form()
