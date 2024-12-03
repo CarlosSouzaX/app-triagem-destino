@@ -2,9 +2,9 @@ import streamlit as st
 
 # Dados de triagem
 entradas = {
-    "Entrada 1": {
+    "Análise Meli": {
         "perguntas": [
-            {"texto": "O produto está bloqueado?", "resposta_sim": None, "resposta_nao": None},
+            {"texto": "O produto está bloqueado?", "resposta_sim": "Rejeitar SR", "resposta_nao": None},
             {"texto": "O produto está funcional?", "resposta_sim": "Saída 1", "resposta_nao": None},
             {"texto": "Há danos estéticos?", "resposta_sim": "Saída 2", "resposta_nao": "Saída 3"}
         ]
