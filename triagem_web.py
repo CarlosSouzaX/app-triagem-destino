@@ -17,7 +17,7 @@ entradas = {
     "RunOff": {
         "perguntas": [
             "O produto está dentro da garantia?",
-            "Há defeitos funcionais?"
+            "Há defeitos funcionais???"
         ],
         "decisoes": {
             ("sim", "não"): "AT Same",
@@ -40,8 +40,10 @@ def decidir_destino(entrada, respostas):
     respostas_tuple = tuple(respostas)
     return dados["decisoes"].get(respostas_tuple, "Destino não definido")
 
-# Função para resetar o formulário
 def reset_form():
+    """
+    Reseta o estado do formulário para permitir nova submissão.
+    """
     st.session_state.clear()
 
 # Interface Streamlit
@@ -60,25 +62,24 @@ if entrada_selecionada:
     # Controle do progresso: Quantas perguntas foram respondidas
     if "progresso" not in st.session_state:
         st.session_state["progresso"] = 0
-
-    respostas = st.session_state.get("respostas", [])
+    if "respostas" not in st.session_state:
+        st.session_state["respostas"] = [None] * len(perguntas)
 
     # Mostra perguntas dinamicamente
-    for i, pergunta in enumerate(perguntas):
-        if i < st.session_state["progresso"]:
-            st.write(f"{pergunta} - Resposta: {respostas[i]}")
-        elif i == st.session_state["progresso"]:
-            resposta = st.radio(pergunta, options=["sim", "não"], key=f"pergunta_{i}")
-            if resposta:
-                respostas.append(resposta)
-                st.session_state["progresso"] += 1
-                st.session_state["respostas"] = respostas
-                st.experimental_rerun()
-            break
+    progresso = st.session_state["progresso"]
+    if progresso < len(perguntas):
+        resposta = st.radio(
+            perguntas[progresso], 
+            options=["sim", "não"], 
+            key=f"pergunta_{progresso}"
+        )
+        if resposta:
+            st.session_state["respostas"][progresso] = resposta
+            st.session_state["progresso"] += 1
 
     # Mostrar botão Enviar quando todas as perguntas forem respondidas
-    if st.session_state["progresso"] == len(perguntas):
+    if progresso == len(perguntas):
         if st.button("Enviar"):
-            destino = decidir_destino(entrada_selecionada, respostas)
+            destino = decidir_destino(entrada_selecionada, st.session_state["respostas"])
             st.success(f"O destino recomendado é: {destino}")
             reset_form()
