@@ -33,7 +33,6 @@ entradas = {
     },
 }
 
-# Funções auxiliares
 def decidir_destino(entrada, respostas):
     """
     Decide o destino com base na entrada e nas respostas.
@@ -50,15 +49,15 @@ def reset_form():
     st.session_state["respostas"] = []
     st.session_state["ultima_entrada"] = None
 
-# Interface Streamlit
-st.title("Sistema de Triagem de Produtos")
-
 # Inicialização do estado
 if "entrada_selecionada" not in st.session_state:
     st.session_state["entrada_selecionada"] = None
     st.session_state["ultima_entrada"] = None
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
+
+# Interface do Streamlit
+st.title("Sistema de Triagem de Produtos")
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
@@ -67,22 +66,23 @@ entrada_atual = st.selectbox(
     index=0 if st.session_state["entrada_selecionada"] is None else list(entradas.keys()).index(st.session_state["entrada_selecionada"])
 )
 
-# Resetar progresso ao mudar a entrada
+# Resetar o estado ao mudar a entrada
 if entrada_atual != st.session_state["ultima_entrada"]:
     st.session_state["entrada_selecionada"] = entrada_atual
     st.session_state["ultima_entrada"] = entrada_atual
     reset_form()
 
-# Recuperar perguntas e progresso
+# Recuperar progresso e perguntas
 perguntas = entradas[st.session_state["entrada_selecionada"]]["perguntas"]
 progresso = st.session_state["progresso"]
+
+# Garantir sincronização da lista de respostas com as perguntas
+if "respostas" not in st.session_state or len(st.session_state["respostas"]) != len(perguntas):
+    st.session_state["respostas"] = [None] * len(perguntas)
+
 respostas = st.session_state["respostas"]
 
-# Garantir que a lista de respostas tenha o tamanho correto
-while len(respostas) < len(perguntas):
-    respostas.append(None)
-
-# Exibir perguntas respondidas anteriormente
+# Mostrar perguntas anteriores
 for i in range(progresso):
     st.write(f"**Pergunta {i + 1}: {perguntas[i]['texto']}**")
     st.write(f"Resposta: {respostas[i]}")
@@ -90,12 +90,17 @@ for i in range(progresso):
 # Exibir a próxima pergunta
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
-    resposta_index = -1 if respostas[progresso] is None else ["sim", "não"].index(respostas[progresso])
-    
+
+    # Verificar o índice inicial da resposta no st.radio
+    if respostas[progresso] is None:
+        resposta_index = -1  # Nenhuma resposta selecionada
+    else:
+        resposta_index = ["sim", "não"].index(respostas[progresso])
+
     resposta = st.radio(
-        pergunta_atual["texto"], 
-        options=["sim", "não"], 
-        index=resposta_index,  # Garante índice válido
+        pergunta_atual["texto"],
+        options=["sim", "não"],
+        index=0 if resposta_index == -1 else resposta_index,
         key=f"pergunta_{progresso}"
     )
 
@@ -103,7 +108,7 @@ if progresso < len(perguntas):
         respostas[progresso] = resposta
         st.session_state["respostas"] = respostas
 
-        # Interromper fluxo se pergunta de corte for respondida com "sim"
+        # Interromper fluxo para perguntas de corte
         if pergunta_atual["corte"] and resposta == "sim":
             destino = decidir_destino(entrada_atual, respostas[:progresso + 1])
             st.success(f"O destino recomendado é: {destino}")
@@ -111,14 +116,13 @@ if progresso < len(perguntas):
         else:
             st.session_state["progresso"] += 1
 
-# Botão "Voltar" para corrigir respostas anteriores
+# Botão "Voltar" para ajustar respostas
 if progresso > 0:
     if st.button("Voltar"):
         st.session_state["progresso"] -= 1
-        respostas[progresso - 1] = None
-        st.session_state["respostas"] = respostas
+        st.session_state["respostas"][progresso - 1] = None
 
-# Mostrar botão Enviar quando todas as perguntas forem respondidas
+# Mostrar botão Enviar ao final
 if progresso == len(perguntas):
     if st.button("Enviar"):
         destino = decidir_destino(entrada_atual, respostas)
