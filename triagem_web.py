@@ -87,10 +87,17 @@ for i in range(progresso):
 # Exibir a próxima pergunta
 if progresso < len(perguntas):
     pergunta_atual = perguntas[progresso]
+
+    # Determinar o índice da resposta no st.radio
+    if respostas[progresso] in ["sim", "não"]:
+        resposta_index = ["sim", "não"].index(respostas[progresso])
+    else:
+        resposta_index = -1  # Nenhuma resposta selecionada inicialmente
+
     resposta = st.radio(
         pergunta_atual["texto"],
         options=["sim", "não"],
-        index=["sim", "não"].index(respostas[progresso]) if respostas[progresso] in ["sim", "não"] else -1,
+        index=0 if resposta_index == -1 else resposta_index,
         key=f"pergunta_{progresso}"
     )
 
