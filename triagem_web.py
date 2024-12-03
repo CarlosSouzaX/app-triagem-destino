@@ -5,7 +5,7 @@ entradas = {
     "Análise Meli": {
         "perguntas": [
             "O produto está funcional?",
-            "Há danos estéticos?"
+            "Há danos estéticos de qual ordem?"
         ],
         "decisoes": {
             ("sim", "não"): "AT LN",
