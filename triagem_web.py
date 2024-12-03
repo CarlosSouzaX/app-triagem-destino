@@ -90,7 +90,7 @@ if progresso < len(perguntas):
     resposta = st.radio(
         pergunta_atual["texto"],
         options=["sim", "não"],
-        index=0 if respostas[progresso] == "sim" else (1 if respostas[progresso] == "não" else -1),
+        index=["sim", "não"].index(respostas[progresso]) if respostas[progresso] in ["sim", "não"] else -1,
         key=f"pergunta_{progresso}"
     )
 
