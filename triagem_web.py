@@ -4,9 +4,6 @@ import json
 import pandas as pd
 import os
 from dotenv import load_dotenv
-import time
-
-
 
 # Acessar as variáveis
 METABASE_URL = st.secrets["METABASE_URL"]
@@ -31,7 +28,35 @@ def autenticar_metabase():
     except Exception as e:
         st.error(f"Erro na autenticação: {str(e)}")
         return None
-    
+'''
+# Carregar variáveis do .env
+load_dotenv()
+
+# Acessar as variáveis
+METABASE_URL = os.getenv("METABASE_URL")
+METABASE_USERNAME = os.getenv("METABASE_USERNAME")
+METABASE_PASSWORD = os.getenv("METABASE_PASSWORD")
+
+# Autenticação no Metabase
+def autenticar_metabase():
+    try:
+        url = f"{METABASE_URL}/api/session"
+        payload = {
+            "username": METABASE_USERNAME,
+            "password": METABASE_PASSWORD
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            token = response.json()["id"]
+            return token
+        else:
+            st.error(f"Erro na autenticação: {response.status_code} - {response.text}")
+            raise Exception("Erro na autenticação com o Metabase")
+    except Exception as e:
+        st.error(f"Erro na autenticação: {str(e)}")
+        return None
+'''
+
 # Consulta ao Metabase
 def consultar_metabase(card_id):
     token = autenticar_metabase()
