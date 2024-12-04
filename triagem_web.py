@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Acessar as variáveis
-METABASE_URL = st.secrets("METABASE_URL")
-METABASE_USERNAME = st.secrets("METABASE_USERNAME")
-METABASE_PASSWORD = st.secrets("METABASE_PASSWORD")
+METABASE_URL = st.secrets["METABASE_URL"]
+METABASE_USERNAME = st.secrets["METABASE_USERNAME"]
+METABASE_PASSWORD = st.secrets["METABASE_PASSWORD"]
 
 # Autenticação no Metabase
 def autenticar_metabase():
