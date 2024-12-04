@@ -17,22 +17,27 @@ METABASE_PASSWORD = st.secrets["METABASE_PASSWORD"]
 # Função para autenticação no Metabase
 def autenticar_metabase():
     try:
-        url = f"{'METABASE_URL'}/api/session"
+        st.write("Iniciando autenticação no Metabase...")
+        url = f"{METABASE_URL}/api/session"
         payload = {
-            "username": 'METABASE_USERNAME',
-            "password": 'METABASE_PASSWORD'
+            "username": METABASE_USERNAME,
+            "password": METABASE_PASSWORD
         }
-        st.write("Tentando autenticar no Metabase com URL:", url)
-        response = requests.post(url, json=payload)
-        st.write("Status Code:", response.status_code)
-        st.write("Resposta:", response.text)
+        st.write(f"Usando URL: {url}")
+        response = requests.post(url, json=payload, timeout=10)
+        st.write(f"Status Code: {response.status_code}")
+        st.write(f"Resposta: {response.text}")
 
         if response.status_code == 200:
-            return response.json()["id"]
+            token = response.json()["id"]
+            st.success("Autenticação bem-sucedida!")
+            return token
         else:
-            raise Exception(f"Erro na autenticação: {response.status_code}")
+            st.error(f"Erro na autenticação: {response.status_code} - {response.text}")
+            return None
     except Exception as e:
-        return str(e)
+        st.error(f"Erro na autenticação: {str(e)}")
+        return None
 
 # Carregar dados do Metabase
 def carregar_dados_metabase():
