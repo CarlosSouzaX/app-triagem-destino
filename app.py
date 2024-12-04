@@ -8,6 +8,8 @@ import streamlit as st
 
 app = Flask(__name__)
 
+
+'''
 METABASE_URL = st.secrets["METABASE_URL"]
 METABASE_USERNAME = st.secrets["METABASE_USERNAME"]
 METABASE_PASSWORD = st.secrets["METABASE_PASSWORD"]
@@ -53,7 +55,7 @@ def autenticar_metabase():
         return response.json()["id"]
     else:
         raise Exception("Falha na autenticação do Metabase")
-'''
+
 
 # Carregar dados do Metabase
 def carregar_dados_metabase():
