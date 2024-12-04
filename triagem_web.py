@@ -4,9 +4,9 @@ import json
 import pandas as pd
 import os
 from dotenv import load_dotenv
+import time
 
-# Carregar variáveis do .env
-load_dotenv()
+
 
 # Acessar as variáveis
 METABASE_URL = st.secrets["METABASE_URL"]
@@ -21,7 +21,7 @@ def autenticar_metabase():
             "username": METABASE_USERNAME,
             "password": METABASE_PASSWORD
         }
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, timeout=10)
         if response.status_code == 200:
             token = response.json()["id"]
             return token
