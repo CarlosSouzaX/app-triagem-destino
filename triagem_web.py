@@ -5,7 +5,7 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 
-# Carregar variáveis do .env
+
 load_dotenv()
 
 # Acessar as variáveis
@@ -13,15 +13,13 @@ METABASE_URL = os.getenv("METABASE_URL")
 METABASE_USERNAME = os.getenv("METABASE_USERNAME")
 METABASE_PASSWORD = os.getenv("METABASE_PASSWORD")
 
-# Carregar variáveis do .env
-load_dotenv()
 
 # Função para autenticação no Metabase
 def autenticar_metabase():
-    url = f"{os.getenv(METABASE_URL)}/api/session"
+    url = f"{os.getenv("METABASE_URL")}/api/session"
     payload = {
-        "username": os.getenv(METABASE_USERNAME),
-        "password": os.getenv(METABASE_PASSWORD),
+        "username": os.getenv("METABASE_USERNAME"),
+        "password": os.getenv("METABASE_PASSWORD"),
     }
     response = requests.post(url, json=payload)
     if response.status_code == 200:
