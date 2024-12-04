@@ -4,24 +4,31 @@ import pandas as pd
 import requests
 import json
 from dotenv import load_dotenv
+import streamlit as st
 
 app = Flask(__name__)
 
 # Carregar variáveis do .env
-load_dotenv()
+#load_dotenv()
+METABASE_URL = st.secrets["METABASE_URL"]
+METABASE_USERNAME = st.secrets["METABASE_USERNAME"]
+METABASE_PASSWORD = st.secrets["METABASE_PASSWORD"]
 
 # Função para autenticação no Metabase
 def autenticar_metabase():
-    url = f"{os.getenv('METABASE_URL')}/api/session"
-    payload = {
-        "username": os.getenv("METABASE_USERNAME"),
-        "password": os.getenv("METABASE_PASSWORD"),
-    }
-    response = requests.post(url, json=payload)
-    if response.status_code == 200:
-        return response.json()["id"]
-    else:
-        raise Exception("Falha na autenticação do Metabase")
+    try:
+        url = f"{'METABASE_URL'}/api/session"
+        payload = {
+            "username": 'METABASE_USERNAME',
+            "password": 'METABASE_PASSWORD'
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            return response.json()["id"]
+        else:
+            raise Exception(f"Erro na autenticação: {response.status_code}")
+    except Exception as e:
+        return str(e)
 
 # Carregar dados do Metabase
 def carregar_dados_metabase():
