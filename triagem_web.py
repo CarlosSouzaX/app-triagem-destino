@@ -3,7 +3,7 @@ import streamlit as st
 # Dados de triagem (estrutura simplificada)
 entradas = {
     "Análise Meli": [
-        {"texto": "O device é da marca Xiaomi ou Apple?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
+        {"texto": "O device é da marca Xiaomi ou Apple ou Motorola?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
         {"texto": "O Mi/FMiP está bloqueado?", "sim": {"saida": "Rejeitar SR"}, "nao": {"proxima": 2}},
         {"texto": "Há danos estéticos?", "sim": {"saida": "Saída 2"}, "nao": {"saida": "Saída 3"}}
     ],
