@@ -46,7 +46,7 @@ def processar_resposta(pergunta_atual, resposta):
     st.rerun()
 
 # Interface do Streamlit
-st.title("Sistema de Triagem - Fluxo Simplificado")
+st.title("Sistema de Triagem")
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
