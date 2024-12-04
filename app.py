@@ -22,7 +22,11 @@ def autenticar_metabase():
             "username": 'METABASE_USERNAME',
             "password": 'METABASE_PASSWORD'
         }
+        st.write("Tentando autenticar no Metabase com URL:", url)
         response = requests.post(url, json=payload)
+        st.write("Status Code:", response.status_code)
+        st.write("Resposta:", response.text)
+
         if response.status_code == 200:
             return response.json()["id"]
         else:
