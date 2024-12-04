@@ -77,10 +77,32 @@ def processar_resposta(pergunta_atual, resposta):
         st.session_state["saida"] = destino["saida"]
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
-    st.experimental_rerun()
+    st.rerun()
 
 # Interface do Streamlit
 st.title("Sistema de Triagem")
+
+# Botão para autenticar
+if st.button("Testar Autenticação"):
+    token = autenticar_metabase()
+    if token:
+        st.success("Autenticação no Metabase bem-sucedida!")
+    else:
+        st.error("Falha na autenticação.")
+
+# Campo para digitar o ID do card e consultar
+card_id = st.text_input("Digite o ID do card para consultar:", value="511444")
+if st.button("Testar Consulta"):
+    if card_id.isdigit():
+        df = consultar_metabase(int(card_id))
+        if df is not None:
+            st.success("Consulta ao Metabase realizada com sucesso!")
+            st.write("Dados retornados:")
+            st.dataframe(df)
+        else:
+            st.error("Falha na consulta ao Metabase.")
+    else:
+        st.warning("Por favor, insira um ID numérico válido.")
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
