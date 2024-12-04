@@ -1,8 +1,41 @@
 from flask import Flask, render_template, request
+import os
+import pandas as pd
+import requests
+import json
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-# Dados de triagem
+# Carregar variáveis do .env
+load_dotenv()
+
+# Função para autenticação no Metabase
+def autenticar_metabase():
+    url = f"{os.getenv('METABASE_URL')}/api/session"
+    payload = {
+        "username": os.getenv("METABASE_USERNAME"),
+        "password": os.getenv("METABASE_PASSWORD"),
+    }
+    response = requests.post(url, json=payload)
+    if response.status_code == 200:
+        return response.json()["id"]
+    else:
+        raise Exception("Falha na autenticação do Metabase")
+
+# Carregar dados do Metabase
+def carregar_dados_metabase():
+    token = autenticar_metabase()
+    headers = {"X-Metabase-Session": token}
+    url = f"{os.getenv('METABASE_URL')}/api/card/1175/query/json"  # Substitua o ID do card
+    response = requests.post(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        return pd.DataFrame(data)
+    else:
+        raise Exception("Erro ao carregar dados do Metabase")
+
+# Dados de triagem (hardcoded para exemplo)
 entradas = {
     "Análise Meli": {
         "perguntas": [
@@ -27,10 +60,10 @@ entradas = {
             ("não", "sim"): "Qualidade",
             ("não", "não"): "IN-HOUSE Same",
         }
-    },
-    # Adicionar outras entradas conforme necessário...
+    }
 }
 
+# Função para decidir o destino
 def decidir_destino(entrada, respostas):
     dados = entradas.get(entrada)
     if not dados:
