@@ -9,6 +9,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet=url, usecols=[0, 1])
 df = pd.DataFrame(df)
 
+print(df.columns)
 
 # Dados de triagem
 entradas = {
@@ -59,17 +60,30 @@ st.title("Sistema de Triagem")
 
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
+
+# Entrada do usuário
 device_input = st.text_input("Digite o Device:")
+
+# Botão para realizar a busca
 if st.button("Buscar"):
-    if not device_input.strip():
+    if not device_input.strip():  # Verifica se o campo está vazio ou só tem espaços
         st.warning("Por favor, insira um valor válido para o Device.")
     else:
+        # Remover espaços extras do input do usuário e padronizar
+        device_input = device_input.strip()
+
+        # Garantir que a coluna 'Device' não tenha espaços extras
+        df['Device'] = df['Device'].str.strip()
+
         # Procurar o modelo correspondente no DataFrame
         modelo_resultado = df.loc[df['Device'] == device_input, 'Modelo']
+
+        # Verificar se o resultado foi encontrado
         if not modelo_resultado.empty:
             st.success(f"Modelo correspondente: {modelo_resultado.iloc[0]}")
         else:
-            st.error("Device não encontrado.")
+            st.error(f"Device '{device_input}' não encontrado no DataFrame.")
+
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
