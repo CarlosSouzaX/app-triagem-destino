@@ -89,7 +89,7 @@ def processar_resposta(pergunta_atual, resposta):
         st.session_state["saida"] = destino["saida"]
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
-    st.experimental_rerun()
+    st.rerun()
 
 # Interface de Seleção
 entrada_atual = st.selectbox(
