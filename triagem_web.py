@@ -15,6 +15,9 @@ df = pd.DataFrame(df)
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
+st.write("Dados:")
+st.write(df.head())
+
 # Título Principal
 st.title("📋 Sistema de Triagem")
 
