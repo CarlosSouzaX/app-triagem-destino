@@ -1,1 +1,7 @@
 streamline
+streamlit
+gspread
+google-auth
+google-auth-oauthlib
+pandas
+python-dotenv
