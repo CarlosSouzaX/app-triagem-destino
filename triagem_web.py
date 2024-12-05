@@ -17,6 +17,7 @@ df.columns = df.columns.str.strip().str.lower()
 
 st.write("Dados:")
 st.write(df.head())
+st.write("Tipos de dados:", df.dtypes)
 
 # Título Principal
 st.title("📋 Sistema de Triagem")
