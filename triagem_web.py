@@ -2,52 +2,61 @@ import streamlit as st
 import pandas as pd
 import gspread
 import json
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # Escopo para acessar o Google Sheets
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 def read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE):
+    
+    creds = None
+ 
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    
     try:
-        # Carrega as credenciais do Secrets Manager
-        google_credentials = st.secrets["google_credentials"]
-
-        # Configura o fluxo de autenticação
-        flow = InstalledAppFlow.from_client_config(
-            {"installed": google_credentials}, SCOPES
-        )
-        creds = flow.run_local_server(port=0)
-
-        # Autenticação com o gspread
         gc = gspread.authorize(creds)
         sheet = gc.open_by_key(SPREADSHEET_ID).worksheet(RANGE_NAME)
         tabela = sheet.get(CELL_RANGE)
-
+        
         # Inicializando as listas
         device = []
         modelo = []
 
+        
         # Percorre as linhas da tabela e adiciona os valores nas respectivas listas
         for row in tabela:
             device.append(row[0])
             modelo.append(row[1])
-
+   
+        
         # Cria uma lista de tuplas usando zip
         lista = list(zip(device, modelo))
-
+        
         # Definindo os nomes das colunas
         colunas = ['Device', 'Modelo']
-
+        
         # Cria o DataFrame a partir da lista de tuplas
         df = pd.DataFrame(lista, columns=colunas)
-
+        
         return df
-
     except HttpError as err:
-        st.error(f"Erro ao acessar o Google Sheets: {err}")
-        return pd.DataFrame()
+        print(err)
 
 # Dados de triagem
 entradas = {
