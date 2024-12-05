@@ -38,10 +38,8 @@ if st.button("Buscar"):
                 resultado = df.loc[df["device"] == device_input_float, df.columns[1:3]]
                 st.write(resultado)
                 if not resultado.empty:
-                    st.success("✅ Modelos correspondentes:")
-                    for i in range(len(resultado.columns)):  # Itera sobre o número de colunas
-                        valor = resultado.iloc[0, i]  # Acessa o valor na linha 0, coluna i
-                        st.success(f"Campo {i + 1}: **{valor}**")
+                    st.success(f"✅ Marca: **{resultado.iloc[0,2]}**")
+                    st.success(f"✅ Modelo: **{resultado.iloc[0,1]}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
