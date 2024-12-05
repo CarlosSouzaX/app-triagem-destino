@@ -5,3 +5,4 @@ google-auth
 google-auth-oauthlib
 pandas
 python-dotenv
+google-api-python-client
