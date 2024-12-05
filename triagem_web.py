@@ -33,12 +33,12 @@ if st.button("Buscar"):
         try:
             # Converter o input para float
             device_input_float = float(device_input.strip())
-            if "device" in df.columns and "modelo" in df.columns:
+            if "device" in df.columns:
                 # Filtrar pelo Device no DataFrame
-                resultado = df.loc[df["device"] == device_input_float, "modelo"]
+                resultado = df.loc[df["device"] == device_input_float, df.columns[1:3]]
                 if not resultado.empty:
-                    st.success(f"✅ Modelo correspondente: **{resultado.iloc[0]}**")
-                    st.success(f"✅ Marca correspondente: **{resultado.iloc[1]}**")
+                    st.success("✅ Dados correspondentes:")
+                    st.write(resultado)
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
