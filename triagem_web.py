@@ -15,7 +15,7 @@ df = pd.DataFrame(df)
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
-st.write("Dados:")
+st.write("Dadossss:")
 st.write(df.head())
 st.write("Tipos de dados:", df.dtypes)
 
