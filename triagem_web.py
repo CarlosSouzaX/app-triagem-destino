@@ -9,7 +9,7 @@ url = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRI
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Carregar os dados da planilha
-df = conn.read(spreadsheet=url, worksheet="Triagem", usecols=[0, 1])
+df = conn.read(spreadsheet=url, worksheet="Triagem", usecols=[0, 1, 2])
 df = pd.DataFrame(df)
 
 # Normalizar os nomes das colunas
