@@ -1,42 +1,66 @@
 import streamlit as st
-import requests
-import json
+
 import pandas as pd
 import os
+import gspread
 from dotenv import load_dotenv
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
+# If modifying these scopes, delete the file token.json.
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-load_dotenv()
-
-# Acessar as variáveis
-METABASE_URL = os.getenv("METABASE_URL")
-METABASE_USERNAME = os.getenv("METABASE_USERNAME")
-METABASE_PASSWORD = os.getenv("METABASE_PASSWORD")
-
-
-# Função para autenticação no Metabase
-def autenticar_metabase():
-    url = f"{os.getenv('METABASE_URL')}/api/session"
-    payload = {
-        "username": os.getenv('METABASE_USERNAME'),
-        "password": os.getenv('METABASE_PASSWORD'),
-    }
-    response = requests.post(url, json=payload)
-    if response.status_code == 200:
-        return response.json()["id"]
-    else:
-        raise Exception("Falha na autenticação do Metabase")
+def read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE):
     
-# Consulta ao Metabase
-def consultar_metabase(card_id):
-    token = autenticar_metabase()
-    headers = {"X-Metabase-Session": token}
-    url = f"{METABASE_URL}/api/card/{card_id}/query/json"
-    response = requests.post(url, headers=headers)
-    if response.status_code == 200:
-        return pd.DataFrame(response.json())
-    else:
-        raise Exception("Erro ao consultar dados do Metabase")
+    creds = None
+ 
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    
+    try:
+        gc = gspread.authorize(creds)
+        sheet = gc.open_by_key(SPREADSHEET_ID).worksheet(RANGE_NAME)
+        tabela = sheet.get(CELL_RANGE)
+        
+        # Inicializando as listas
+        device = []
+        modelo = []
+
+        
+        # Percorre as linhas da tabela e adiciona os valores nas respectivas listas
+        for row in tabela:
+            device.append(row[0])
+            modelo.append(row[1])
+   
+        
+        # Cria uma lista de tuplas usando zip
+        lista = list(zip(device, modelo))
+        
+        # Definindo os nomes das colunas
+        colunas = ['Device', 'Modelo']
+        
+        # Cria o DataFrame a partir da lista de tuplas
+        df = pd.DataFrame(lista, columns=colunas)
+        
+        return df
+    except HttpError as err:
+        print(err)
+
+
 
 # Dados de triagem
 entradas = {
@@ -83,27 +107,21 @@ def processar_resposta(pergunta_atual, resposta):
 # Interface do Streamlit
 st.title("Sistema de Triagem")
 
-# Botão para autenticar
-if st.button("Testar Autenticação"):
-    token = autenticar_metabase()
-    if token:
-        st.success("Autenticação no Metabase bem-sucedida!")
-    else:
-        st.error("Falha na autenticação.")
+df = read_google_sheets("1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8","Triagem","A:B")
 
-# Campo para digitar o ID do card e consultar
-card_id = st.text_input("Digite o ID do card para consultar:", value="1175")
-if st.button("Testar Consulta"):
-    if card_id.isdigit():
-        df = consultar_metabase(int(card_id))
-        if df is not None:
-            st.success("Consulta ao Metabase realizada com sucesso!")
-            st.write("Dados retornados:")
-            st.dataframe(df)
-        else:
-            st.error("Falha na consulta ao Metabase.")
+# Seção de busca de modelo
+st.write("## Buscar Modelo pelo Device")
+device_input = st.text_input("Digite o Device:")
+if st.button("Buscar"):
+    if not device_input.strip():
+        st.warning("Por favor, insira um valor válido para o Device.")
     else:
-        st.warning("Por favor, insira um ID numérico válido.")
+        # Procurar o modelo correspondente no DataFrame
+        modelo_resultado = df.loc[df['Device'] == device_input, 'Modelo']
+        if not modelo_resultado.empty:
+            st.success(f"Modelo correspondente: {modelo_resultado.iloc[0]}")
+        else:
+            st.error("Device não encontrado.")
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
