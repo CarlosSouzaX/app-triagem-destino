@@ -38,7 +38,7 @@ if st.button("Buscar"):
                 resultado = df.loc[df["device"] == device_input_float, df.columns[1:3]]
                 if not resultado.empty:
                     st.success("✅ Modelos correspondentes:")
-                    for index, value in resultado.iteritems():
+                    for value in resultado:
                         st.write(f"- **{value}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
