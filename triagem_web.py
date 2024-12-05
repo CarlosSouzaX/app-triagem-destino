@@ -15,10 +15,6 @@ df = pd.DataFrame(df)
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
-st.write("Dadossss:")
-st.write(df.head())
-st.write("Tipos de dados:", df.dtypes)
-
 # Título Principal
 st.title("📋 Sistema de Triagem")
 
@@ -38,9 +34,9 @@ if st.button("Buscar"):
                 resultado = df.loc[df["device"] == device_input_float, df.columns[1:7]]
                 if not resultado.empty:
                     st.success(f"✅ Marca: **{resultado.iloc[0, 1]}**")
-                    st.success(f"✅ Modelo: **{resultado.iloc[0, 0]}**")
-                    st.success(f"✅ IMEI: **{resultado.iloc[0, 2]}**")
-                    st.success(f"✅ SR: **{resultado.iloc[0, 4]}**")
+                    st.success(f"✅ Modelo: **{resultado.iloc[0, 2]}**")
+                    st.success(f"✅ IMEI: **{resultado.iloc[0, 3]}**")
+                    st.success(f"✅ SR: **{resultado.iloc[0, 5]}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
