@@ -11,7 +11,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 def read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE):
     try:
         # Carrega as credenciais do Secrets Manager
-        google_credentials = json.loads(st.secrets["google_credentials"])
+        google_credentials = st.secrets["google_credentials"]
         creds = Credentials.from_service_account_info(google_credentials)
 
         # Autenticação com o gspread
