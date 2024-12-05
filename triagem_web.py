@@ -12,6 +12,13 @@ df = pd.DataFrame(df)
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
+# Verificar o DataFrame antes de prosseguir
+st.write("### Verificando o DataFrame inicial")
+st.write("Colunas do DataFrame:", df.columns)
+st.write("Primeiras linhas do DataFrame:")
+st.write(df.head())
+
+
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
 device_input = st.text_input("Digite o Device:")
