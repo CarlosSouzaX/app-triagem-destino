@@ -22,8 +22,6 @@ st.write("Colunas do DataFrame:", df.columns)
 st.write("Primeiras linhas do DataFrame:")
 st.write(df.head())
 
-df["Device"] = df["Device"].astype(int)
-
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
 device_input = st.text_input("Digite o Device:")
