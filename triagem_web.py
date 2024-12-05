@@ -22,6 +22,9 @@ st.write("Colunas do DataFrame:", df.columns)
 st.write("Primeiras linhas do DataFrame:")
 st.write(df.head())
 
+# Converter a coluna 'Device' para int64
+df["Device"] = df["Device"].astype(int)
+
 st.write(df.info())
 st.write(df.dtypes)
 
