@@ -9,24 +9,8 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet=url, worksheet="Triagem" ,usecols=[0, 1])
 df = pd.DataFrame(df)
 
-# Verificar os tipos de dados de cada coluna
-print(df.dtypes)
-
-
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
-
-# Verificar o DataFrame antes de prosseguir
-st.write("### Verificando o DataFrame inicial")
-st.write("Colunas do DataFrame:", df.columns)
-st.write("Primeiras linhas do DataFrame:")
-st.write(df.head())
-
-
-
-st.write(df.info())
-st.write(df.dtypes)
-
 
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
