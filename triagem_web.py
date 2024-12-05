@@ -9,13 +9,6 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet=url, usecols=[0, 1])
 df = pd.DataFrame(df)
 
-# Simula o DataFrame (substitua pela leitura real)
-data = {
-    "Device": ["Samsung Galaxy A14", "Motorola G10"],
-    "Modelo": ["Modelo A14", "Modelo G10"]
-}
-df = pd.DataFrame(data)
-
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
