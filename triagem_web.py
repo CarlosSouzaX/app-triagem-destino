@@ -2,21 +2,52 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
-url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8/edit?gid=350232245#gid=350232245"
+#url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8/edit?gid=350232245#gid=350232245"
 
-conn = st.connection("gsheets", type=GSheetsConnection)
+#conn = st.connection("gsheets", type=GSheetsConnection)
 
-df = conn.read(spreadsheet=url, usecols=[0, 1])
-df = pd.DataFrame(df)
+#df = conn.read(spreadsheet=url, usecols=[0, 1])
+#df = pd.DataFrame(df)
 
-# Verificar as colunas do DataFrame
-print(df.columns)
+# Simula o DataFrame (substitua pela leitura real)
+data = {
+    "Device": ["Samsung Galaxy A14", "Motorola G10"],
+    "Modelo": ["Modelo A14", "Modelo G10"]
+}
+df = pd.DataFrame(data)
 
-# Verificar as primeiras linhas do DataFrame
-print(df.head())
+# Verificar o DataFrame antes de prosseguir
+st.write("### Verificando o DataFrame inicial")
+st.write("Colunas do DataFrame:", df.columns)
+st.write("Primeiras linhas do DataFrame:")
+st.write(df.head())
 
-# Verificar se o DataFrame está vazio
-print(df.empty)
+# Ajustar os nomes das colunas para remover espaços extras e padronizar
+df.columns = df.columns.str.strip()
+df.columns = df.columns.str.lower()  # Converte para minúsculas
+
+# Seção de busca de modelo
+st.write("## Buscar Modelo pelo Device")
+device_input = st.text_input("Digite o Device:")
+
+if st.button("Buscar"):
+    if not device_input.strip():
+        st.warning("Por favor, insira um valor válido para o Device.")
+    else:
+        # Ajustar o input do usuário
+        device_input = device_input.strip()
+
+        # Verificar se as colunas estão presentes
+        if "device" in df.columns and "modelo" in df.columns:
+            # Filtrar pelo Device no DataFrame
+            resultado = df.loc[df["device"] == device_input, "modelo"]
+
+            if not resultado.empty:
+                st.success(f"Modelo correspondente: {resultado.iloc[0]}")
+            else:
+                st.error(f"Device '{device_input}' não encontrado no DataFrame.")
+        else:
+            st.error("As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
 
 
 # Dados de triagem
@@ -66,33 +97,6 @@ st.title("Sistema de Triagem")
 
 
 
-# Seção de busca de modelo
-st.write("## Buscar Modelo pelo Device")
-
-# Entrada do usuário
-device_input = st.text_input("Digite o Device:")
-
-# Botão para realizar a busca
-if st.button("Buscar"):
-    if not device_input.strip():  # Verifica se o campo está vazio ou só tem espaços
-        st.warning("Por favor, insira um valor válido para o Device.")
-    else:
-        # Garantir que a coluna 'Device' existe no DataFrame
-        if 'Device' in df.columns and 'Modelo' in df.columns:
-            # Limpar espaços extras do input do usuário e da coluna
-            device_input = device_input.strip()
-            df['Device'] = df['Device'].str.strip()
-
-            # Procurar o modelo correspondente no DataFrame
-            modelo_resultado = df.loc[df['Device'] == device_input, 'Modelo']
-
-            # Verificar se o resultado foi encontrado
-            if not modelo_resultado.empty:
-                st.success(f"Modelo correspondente: {modelo_resultado.iloc[0]}")
-            else:
-                st.error(f"Device '{device_input}' não encontrado no DataFrame.")
-        else:
-            st.error("As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
 
 
 
