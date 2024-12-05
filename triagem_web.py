@@ -39,7 +39,7 @@ if st.button("Buscar"):
                 if not resultado.empty:
                     st.success("✅ Modelos correspondentes:")
                     for value in resultado:
-                        st.write(f"- **{value}**")
+                        st.success(f"✅ Modelo correspondente: **{value}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
