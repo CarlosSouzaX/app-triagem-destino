@@ -36,7 +36,7 @@ if st.button("Buscar"):
             if "device" in df.columns:
                 # Filtrar pelo Device no DataFrame
                 resultado = df.loc[df["device"] == device_input_float, df.columns[1:3]]
-                st.write(resultado[1])
+                st.write(resultado)
                 if not resultado.empty:
                     st.success("✅ Modelos correspondentes:")
                     for value in resultado:
