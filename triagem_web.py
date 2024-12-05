@@ -16,10 +16,10 @@ METABASE_PASSWORD = os.getenv("METABASE_PASSWORD")
 
 # Função para autenticação no Metabase
 def autenticar_metabase():
-    url = f"{os.getenv("METABASE_URL")}/api/session"
+    url = f"{os.getenv('METABASE_URL')}/api/session"
     payload = {
-        "username": os.getenv("METABASE_USERNAME"),
-        "password": os.getenv("METABASE_PASSWORD"),
+        "username": os.getenv('METABASE_USERNAME'),
+        "password": os.getenv('METABASE_PASSWORD'),
     }
     response = requests.post(url, json=payload)
     if response.status_code == 200:
