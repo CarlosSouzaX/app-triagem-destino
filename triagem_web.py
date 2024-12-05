@@ -2,79 +2,78 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
-# URL do Google Sheets
 url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8/edit?gid=350232245#gid=350232245"
 
-# Conexão com Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Carregar os dados da planilha
-df = conn.read(spreadsheet=url, worksheet="Triagem", usecols=[0, 1])
+df = conn.read(spreadsheet=url, worksheet="Triagem" ,usecols=[0, 1])
 df = pd.DataFrame(df)
 
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
 
 # Seção de busca de modelo
-st.title("Sistema de Triagem")
-st.header("Buscar Modelo pelo Device")
+st.write("## Buscar Modelo pelo Device")
 device_input = st.text_input("Digite o Device:")
 
 if st.button("Buscar"):
     if not device_input.strip():
         st.warning("Por favor, insira um valor válido para o Device.")
     else:
-        try:
-            # Converter o input para float
-            device_input_float = float(device_input.strip())
-            if "device" in df.columns and "modelo" in df.columns:
-                # Filtrar pelo Device no DataFrame
-                resultado = df.loc[df["device"] == device_input_float, "modelo"]
-                if not resultado.empty:
-                    st.success(f"Modelo correspondente: {resultado.iloc[0]}")
-                else:
-                    st.error(f"Device '{device_input}' não encontrado no DataFrame.")
+
+        # Converter o input para float
+        device_input_float = float(device_input.strip())
+
+        # Verificar se as colunas estão presentes
+        if "device" in df.columns and "modelo" in df.columns:
+            # Filtrar pelo Device no DataFrame
+            resultado = df.loc[df["device"] == device_input_float, "modelo"]
+
+            if not resultado.empty:
+                st.success(f"Modelo correspondente: {resultado.iloc[0]}")
             else:
-                st.error("As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
-        except ValueError:
-            st.error("O valor inserido deve ser numérico.")
+                st.error(f"Device '{device_input}' não encontrado no DataFrame.")
+        else:
+            st.error("As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
+
 
 # Dados de triagem
 entradas = {
     "Análise Meli": [
         {"texto": "O produto é da marca Xiaomi ou Apple ou Motorola?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
         {"texto": "O Mi/FMiP está bloqueado?", "sim": {"saida": "Rejeitar SR"}, "nao": {"proxima": 2}},
-        {"texto": "Há danos estéticos?", "sim": {"saida": "Saída 2"}, "nao": {"saida": "Saída 3"}},
+        {"texto": "Há danos estéticos?", "sim": {"saida": "Saída 2"}, "nao": {"saida": "Saída 3"}}
     ],
     "Análise Gazin": [
         {"texto": "O produto está na garantia?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
         {"texto": "O produto está funcional?", "sim": {"saida": "Saída 4"}, "nao": {"proxima": 2}},
-        {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}},
+        {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}}
     ],
     "Análise RunOff": [
         {"texto": "O produto está na garantia?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
         {"texto": "O produto está funcional?", "sim": {"saida": "Saída 4"}, "nao": {"proxima": 2}},
-        {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}},
-    ],
+        {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}}
+    ]
 }
 
 # Inicialização do estado
 if "entrada_selecionada" not in st.session_state:
-    st.session_state.update({
-        "entrada_selecionada": None,
-        "progresso": 0,
-        "respostas": [],
-        "saida": None
-    })
+    st.session_state["entrada_selecionada"] = None
+    st.session_state["progresso"] = 0
+    st.session_state["respostas"] = []
+    st.session_state["saida"] = None
 
 # Funções auxiliares
 def reset_estado():
-    st.session_state.update({"progresso": 0, "respostas": [], "saida": None})
+    st.session_state["progresso"] = 0
+    st.session_state["respostas"] = []
+    st.session_state["saida"] = None
 
 def exibir_perguntas_respondidas(perguntas, respostas):
-    st.subheader("Perguntas Respondidas")
+    st.write("### Perguntas Respondidas")
     for i, resposta in enumerate(respostas):
-        st.write(f"**{i + 1}. {perguntas[i]['texto']}**")
+        pergunta = perguntas[i]["texto"]
+        st.write(f"**{i + 1}. {pergunta}**")
         st.write(f"Resposta: {resposta}")
 
 def processar_resposta(pergunta_atual, resposta):
@@ -83,10 +82,15 @@ def processar_resposta(pergunta_atual, resposta):
         st.session_state["saida"] = destino["saida"]
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
-    st.experimental_rerun()
+    st.rerun()
 
-# Interface de triagem
-st.header("Triagem")
+# Interface do Streamlit
+st.title("Sistema de Triagem")
+
+
+
+
+
 
 # Seleção da entrada
 entrada_atual = st.selectbox(
@@ -95,6 +99,7 @@ entrada_atual = st.selectbox(
     on_change=reset_estado
 )
 
+# Fluxo principal
 if entrada_atual in entradas:
     perguntas = entradas[entrada_atual]
     progresso = st.session_state["progresso"]
