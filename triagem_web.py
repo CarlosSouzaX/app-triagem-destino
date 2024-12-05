@@ -38,6 +38,7 @@ if st.button("Buscar"):
                 resultado = df.loc[df["device"] == device_input_float, "modelo"]
                 if not resultado.empty:
                     st.success(f"✅ Modelo correspondente: **{resultado.iloc[0]}**")
+                    st.success(f"✅ Marca correspondente: **{resultado.iloc[1]}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
