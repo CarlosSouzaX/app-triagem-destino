@@ -9,7 +9,15 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 df = conn.read(spreadsheet=url, usecols=[0, 1])
 df = pd.DataFrame(df)
 
+# Verificar as colunas do DataFrame
 print(df.columns)
+
+# Verificar as primeiras linhas do DataFrame
+print(df.head())
+
+# Verificar se o DataFrame está vazio
+print(df.empty)
+
 
 # Dados de triagem
 entradas = {
@@ -69,20 +77,23 @@ if st.button("Buscar"):
     if not device_input.strip():  # Verifica se o campo está vazio ou só tem espaços
         st.warning("Por favor, insira um valor válido para o Device.")
     else:
-        # Remover espaços extras do input do usuário e padronizar
-        device_input = device_input.strip()
+        # Garantir que a coluna 'Device' existe no DataFrame
+        if 'Device' in df.columns and 'Modelo' in df.columns:
+            # Limpar espaços extras do input do usuário e da coluna
+            device_input = device_input.strip()
+            df['Device'] = df['Device'].str.strip()
 
-        # Garantir que a coluna 'Device' não tenha espaços extras
-        df['Device'] = df['Device'].str.strip()
+            # Procurar o modelo correspondente no DataFrame
+            modelo_resultado = df.loc[df['Device'] == device_input, 'Modelo']
 
-        # Procurar o modelo correspondente no DataFrame
-        modelo_resultado = df.loc[df['Device'] == device_input, 'Modelo']
-
-        # Verificar se o resultado foi encontrado
-        if not modelo_resultado.empty:
-            st.success(f"Modelo correspondente: {modelo_resultado.iloc[0]}")
+            # Verificar se o resultado foi encontrado
+            if not modelo_resultado.empty:
+                st.success(f"Modelo correspondente: {modelo_resultado.iloc[0]}")
+            else:
+                st.error(f"Device '{device_input}' não encontrado no DataFrame.")
         else:
-            st.error(f"Device '{device_input}' não encontrado no DataFrame.")
+            st.error("As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
+
 
 
 # Seleção da entrada
