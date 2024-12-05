@@ -9,7 +9,7 @@ url = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRI
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # Carregar os dados da planilha
-df = conn.read(spreadsheet=url, worksheet="Triagem", usecols=[0, 1, 2])
+df = conn.read(spreadsheet=url, worksheet="Triagem", usecols=[0, 1, 2, 3, 4, 5, 6])
 df = pd.DataFrame(df)
 
 # Normalizar os nomes das colunas
@@ -35,11 +35,12 @@ if st.button("Buscar"):
             device_input_float = float(device_input.strip())
             if "device" in df.columns:
                 # Filtrar pelo Device no DataFrame
-                resultado = df.loc[df["device"] == device_input_float, df.columns[1:3]]
-                st.write(resultado)
+                resultado = df.loc[df["device"] == device_input_float, df.columns[1:7]]
                 if not resultado.empty:
                     st.success(f"✅ Marca: **{resultado.iloc[0, 1]}**")
                     st.success(f"✅ Modelo: **{resultado.iloc[0, 0]}**")
+                    st.success(f"✅ IMEI: **{resultado.iloc[0, 2]}**")
+                    st.success(f"✅ SR: **{resultado.iloc[0, 4]}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
