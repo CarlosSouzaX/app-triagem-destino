@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
-#url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8/edit?gid=350232245#gid=350232245"
+url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8/edit?gid=350232245#gid=350232245"
 
-#conn = st.connection("gsheets", type=GSheetsConnection)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
-#df = conn.read(spreadsheet=url, usecols=[0, 1])
-#df = pd.DataFrame(df)
+df = conn.read(spreadsheet=url, usecols=[0, 1])
+df = pd.DataFrame(df)
 
 # Simula o DataFrame (substitua pela leitura real)
 data = {
@@ -18,16 +18,6 @@ df = pd.DataFrame(data)
 
 # Normalizar os nomes das colunas
 df.columns = df.columns.str.strip().str.lower()
-
-# Verificar o DataFrame antes de prosseguir
-st.write("### Verificando o DataFrame inicial")
-st.write("Colunas do DataFrame:", df.columns)
-st.write("Primeiras linhas do DataFrame:")
-st.write(df.head())
-
-# Ajustar os nomes das colunas para remover espaços extras e padronizar
-df.columns = df.columns.str.strip()
-df.columns = df.columns.str.lower()  # Converte para minúsculas
 
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
