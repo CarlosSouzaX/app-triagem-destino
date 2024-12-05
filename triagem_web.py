@@ -39,8 +39,9 @@ if st.button("Buscar"):
                 st.write(resultado)
                 if not resultado.empty:
                     st.success("✅ Modelos correspondentes:")
-                    for value in resultado:
-                        st.success(f"✅ Modelo correspondente: **{value}**")
+                    for i in range(len(resultado.columns)):  # Itera sobre o número de colunas
+                        valor = resultado.iloc[0, i]  # Acessa o valor na linha 0, coluna i
+                        st.success(f"Campo {i + 1}: **{valor}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
             else:
