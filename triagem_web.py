@@ -33,6 +33,13 @@ if st.button("Buscar"):
                 # Filtrar pelo Device no DataFrame
                 resultado = df.loc[df["device"] == device_input_float, df.columns[1:7]]
                 if not resultado.empty:
+                    
+                    # Verificar e exibir a marca
+                    marca = resultado.iloc[0, 1]
+                    if pd.notnull(marca):
+                        st.success(f"✅ Marca: **{marca}**")
+                    else:
+                        st.warning("⚠️ Marca não disponível.")
 
                     # Verificar e exibir o IMEI
                     try:
