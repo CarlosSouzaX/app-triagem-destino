@@ -16,6 +16,9 @@ data = {
 }
 df = pd.DataFrame(data)
 
+# Normalizar os nomes das colunas
+df.columns = df.columns.str.strip().str.lower()
+
 # Verificar o DataFrame antes de prosseguir
 st.write("### Verificando o DataFrame inicial")
 st.write("Colunas do DataFrame:", df.columns)
@@ -34,8 +37,6 @@ if st.button("Buscar"):
     if not device_input.strip():
         st.warning("Por favor, insira um valor válido para o Device.")
     else:
-        # Ajustar o input do usuário
-        device_input = device_input.strip()
 
         # Verificar se as colunas estão presentes
         if "device" in df.columns and "modelo" in df.columns:
