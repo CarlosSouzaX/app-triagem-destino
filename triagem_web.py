@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import gspread
 import json
+from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.service_account import Credentials
 from googleapiclient.errors import HttpError
 
@@ -12,7 +13,12 @@ def read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE):
     try:
         # Carrega as credenciais do Secrets Manager
         google_credentials = st.secrets["google_credentials"]
-        creds = Credentials.from_service_account_info(google_credentials)
+
+        # Configura o fluxo de autenticação
+        flow = InstalledAppFlow.from_client_config(
+            {"installed": google_credentials}, SCOPES
+        )
+        creds = flow.run_local_server(port=0)
 
         # Autenticação com o gspread
         gc = gspread.authorize(creds)
