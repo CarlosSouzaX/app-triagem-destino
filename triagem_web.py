@@ -22,6 +22,10 @@ st.write("Colunas do DataFrame:", df.columns)
 st.write("Primeiras linhas do DataFrame:")
 st.write(df.head())
 
+st.write(df.info())
+st.write(df.dtypes)
+
+
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
 device_input = st.text_input("Digite o Device:")
