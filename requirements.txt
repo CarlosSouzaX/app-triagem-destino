@@ -1,8 +1,6 @@
-streamlit
-pandas
-gspread
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
-google-api-python-client
 
+# requirements.txt
+
+streamlit==1.22
+git+https://github.com/streamlit/gsheets-connection
+pandasql  # this is for example/st_app.py only
