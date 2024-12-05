@@ -1,66 +1,47 @@
 import streamlit as st
-
 import pandas as pd
-import os
 import gspread
-from dotenv import load_dotenv
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
+import json
+from google.oauth2.service_account import Credentials
 from googleapiclient.errors import HttpError
 
-# If modifying these scopes, delete the file token.json.
+# Escopo para acessar o Google Sheets
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 def read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE):
-    
-    creds = None
- 
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-    
     try:
+        # Carrega as credenciais do Secrets Manager
+        google_credentials = json.loads(st.secrets["google_credentials"])
+        creds = Credentials.from_service_account_info(google_credentials)
+
+        # Autenticação com o gspread
         gc = gspread.authorize(creds)
         sheet = gc.open_by_key(SPREADSHEET_ID).worksheet(RANGE_NAME)
         tabela = sheet.get(CELL_RANGE)
-        
+
         # Inicializando as listas
         device = []
         modelo = []
 
-        
         # Percorre as linhas da tabela e adiciona os valores nas respectivas listas
         for row in tabela:
             device.append(row[0])
             modelo.append(row[1])
-   
-        
+
         # Cria uma lista de tuplas usando zip
         lista = list(zip(device, modelo))
-        
+
         # Definindo os nomes das colunas
         colunas = ['Device', 'Modelo']
-        
+
         # Cria o DataFrame a partir da lista de tuplas
         df = pd.DataFrame(lista, columns=colunas)
-        
+
         return df
+
     except HttpError as err:
-        print(err)
-
-
+        st.error(f"Erro ao acessar o Google Sheets: {err}")
+        return pd.DataFrame()
 
 # Dados de triagem
 entradas = {
@@ -107,7 +88,11 @@ def processar_resposta(pergunta_atual, resposta):
 # Interface do Streamlit
 st.title("Sistema de Triagem")
 
-df = read_google_sheets("1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8","Triagem","A:B")
+# Carrega os dados do Google Sheets
+SPREADSHEET_ID = "1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZryzKrKbJh8"
+RANGE_NAME = "Triagem"
+CELL_RANGE = "A:B"
+df = read_google_sheets(SPREADSHEET_ID, RANGE_NAME, CELL_RANGE)
 
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")

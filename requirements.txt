@@ -1,8 +1,7 @@
-streamline
 streamlit
+pandas
 gspread
 google-auth
 google-auth-oauthlib
-pandas
-python-dotenv
+google-auth-httplib2
 google-api-python-client
