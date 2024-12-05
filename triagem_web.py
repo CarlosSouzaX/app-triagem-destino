@@ -35,7 +35,7 @@ if st.button("Buscar"):
                 if not resultado.empty:
                     st.success(f"✅ Marca: **{resultado.iloc[0, 1]}**")
                     st.success(f"✅ Modelo: **{resultado.iloc[0, 2]}**")
-                    st.success(f"✅ IMEI: **{int(resultado.iloc[0, 3])}**")
+                    #st.success(f"✅ IMEI: **{int(resultado.iloc[0, 3])}**")
                     st.success(f"✅ SR: **{resultado.iloc[0, 5]}**")
                 else:
                     st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
