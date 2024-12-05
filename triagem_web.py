@@ -1,13 +1,5 @@
 import streamlit as st
 import pandas as pd
-import gspread
-import os
-import json
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from streamlit_gsheets import GSheetsConnection
 
 
@@ -62,8 +54,8 @@ url = "https://docs.google.com/spreadsheets/d/1D6OukHWiEic0jIJN-pLl4mY59xNXmm8qZ
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 df = conn.read(spreadsheet=url, usecols=[0, 1])
+st.dataframe(df)
 print(df)
-
 
 # Seção de busca de modelo
 st.write("## Buscar Modelo pelo Device")
