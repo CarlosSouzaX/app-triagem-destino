@@ -12,7 +12,7 @@ st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="�
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
-USECOLS = [0, 1, 2, 3, 4, 5, 6, 7]
+USECOLS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
 
@@ -49,12 +49,13 @@ with col1:
 
         # Verifica o status geral
         if result["status"] == "success":
-            st.success("✅ Dispositivo encontrado com sucesso!")
 
             # Exibe a Esteira de Atendimento
             esteira = result.get("esteira", "Não definida")
             st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
-            
+
+            st.success("✅ Dispositivo encontrado com sucesso!")
+
             for detalhe in result.get("detalhes", []):
                 campo = detalhe["campo"]
                 status = detalhe["status"]
