@@ -77,26 +77,11 @@ def buscar_modelo_por_device(df, device_input):
             resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "Origem Duvidosa"})
 
         # Verifica o Status da SR
-        status_sr = resultado.iloc[0, 6]  # Supondo que "status_sr" está na sexta coluna
-        status_cores = {
-            "tracked": "laranja",
-            "open": "verde",
-            "closed": "azul",
-            "lost_in_delivery": "cinza",
-            "rejected_documents": "vermelho",
-            "arrived": "amarelo",
-            "swapped": "laranja",
-            "logistics_failure_from_pitzi": "cinza",
-            "expired": "cinza",
-            "rejected_closed": "vermelho",
-            "rejected_sent": "vermelho",
-            "sent": "laranja",
-        }
-        if pd.notnull(status_sr) and status_sr in status_cores:
-            cor = status_cores[status_sr]
-            resultado_final["detalhes"].append({"campo": "STATUS SR", "status": "success", "valor": f"{status_sr} ({cor})"})
+        status_sr = resultado.iloc[0, 5]  # Supondo que "status_sr" está na sexta coluna
+        if pd.notnull(status_sr):
+            resultado_final["detalhes"].append({"campo": "status_sr", "status": "success", "valor": status_sr})
         else:
-            resultado_final["detalhes"].append({"campo": "STATUS SR", "status": "error", "valor": "Status Desconhecido"})
+            resultado_final["detalhes"].append({"campo": "status_sr", "status": "error", "valor": "Status Desconhecido"})
 
         # Verifica o Supplier
         supplier = resultado.iloc[0, 4]  # Supondo que "supplier" está na sétima coluna

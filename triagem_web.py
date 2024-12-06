@@ -31,6 +31,22 @@ with col1:
     # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
 
+        # Mapeamento de cores para o Status da SR
+        status_cores = {
+            "tracked": "orange",
+            "open": "green",
+            "closed": "blue",
+            "lost_in_delivery": "gray",
+            "rejected_documents": "red",
+            "arrived": "yellow",
+            "swapped": "orange",
+            "logistics_failure_from_pitzi": "gray",
+            "expired": "gray",
+            "rejected_closed": "red",
+            "rejected_sent": "red",
+            "sent": "orange",
+        }
+
         # Verifica o status geral
         if result["status"] == "success":
             st.success("✅ Dispositivo encontrado com sucesso!")
@@ -39,7 +55,11 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-                if status == "success":
+                if campo == "status_sr" and status == "success":
+                    # Aplica a cor correspondente ao status no front-end
+                    cor = status_cores.get(valor, "black")  # Cor padrão é preto se não encontrado
+                    st.markdown(f"<span style='color:{cor}; font-weight:bold;'>STATUS SR: {valor}</span>", unsafe_allow_html=True)
+                elif status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
                 elif status == "warning":
                     st.warning(f"⚠️ {campo.capitalize()}: {valor}")
