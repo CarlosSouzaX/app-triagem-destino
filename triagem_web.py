@@ -16,6 +16,11 @@ USECOLS = [0, 1, 2, 3, 4, 5, 6]
 
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
 
+st.write("Estrutura do DataFrame:")
+st.write(df.head())  # Exibe as primeiras linhas do DataFrame
+st.write("Colunas do DataFrame:", df.columns.tolist())  # Exibe os nomes das colunas
+
+
 # Título principal
 st.title("📋 Sistema de Triagem")
 
