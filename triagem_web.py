@@ -10,9 +10,6 @@ USECOLS = [0, 1, 2, 3, 4, 5, 6]
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
 
 
-# Normalizar os nomes das colunas
-df.columns = df.columns.str.strip().str.lower()
-
 # Título principal
 st.title("📋 Sistema de Triagem")
 
@@ -68,9 +65,6 @@ with col2:
 
 # Terceira coluna: Triagem de Produtos
 with col3:
-
-
-
     st.header("⚙️ Triagem de Produtos")
     entradas = {
         "Análise Meli": [
