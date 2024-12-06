@@ -33,18 +33,18 @@ with col1:
 
         # Mapeamento de cores para o Status da SR
         status_cores = {
-            "tracked": "orange",
-            "open": "green",
-            "closed": "blue",
-            "lost_in_delivery": "gray",
-            "rejected_documents": "red",
-            "arrived": "yellow",
-            "swapped": "orange",
-            "logistics_failure_from_pitzi": "gray",
-            "expired": "gray",
-            "rejected_closed": "red",
-            "rejected_sent": "red",
-            "sent": "orange",
+            "tracked": "#FFA500",  # Laranja
+            "open": "#008000",  # Verde
+            "closed": "#0000FF",  # Azul
+            "lost_in_delivery": "#808080",  # Cinza
+            "rejected_documents": "#FF0000",  # Vermelho
+            "arrived": "#FFFF00",  # Amarelo
+            "swapped": "#FFA500",  # Laranja
+            "logistics_failure_from_pitzi": "#808080",  # Cinza
+            "expired": "#808080",  # Cinza
+            "rejected_closed": "#FF0000",  # Vermelho
+            "rejected_sent": "#FF0000",  # Vermelho
+            "sent": "#FFA500",  # Laranja
         }
 
         # Verifica o status geral
@@ -55,10 +55,23 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-                if campo == "status_sr" and status == "success":
-                    # Aplica a cor correspondente ao status no front-end
-                    cor = status_cores.get(valor, "yellow")  # Cor padrão é preto se não encontrado
-                    st.markdown(f"<span style='color:{cor}; font-weight:bold;'>STATUS SR: {valor}</span>", unsafe_allow_html=True)
+                if campo == "STATUS SR" and status == "success":
+                    # Aplica a cor de fundo correspondente ao status
+                    cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
+                    st.markdown(
+                        f"""
+                        <div style="
+                            background-color: {cor};
+                            color: white;
+                            padding: 10px;
+                            border-radius: 5px;
+                            margin-bottom: 10px;
+                        ">
+                            <strong>STATUS SR:</strong> {valor}
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
                 elif status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
                 elif status == "warning":
