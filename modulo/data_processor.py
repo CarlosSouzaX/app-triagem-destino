@@ -139,8 +139,8 @@ def buscar_modelo_por_device(df, device_input):
             mdm_payjoy,
             modelo,
             imei_status,
-            status_sr
-            #modelos_ativos
+            status_sr,
+            modelos_ativos
         )
 
         # Adiciona a Esteira ao resultado final
