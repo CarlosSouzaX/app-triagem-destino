@@ -10,6 +10,8 @@ USECOLS = [0, 1, 2, 3, 4, 5, 6]
 
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
 
+# Configurar o layout para "wide"
+st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
 
 # Título principal
 st.title("📋 Sistema de Triagem")
