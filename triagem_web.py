@@ -58,6 +58,16 @@ with col1:
             esteira = result.get("esteira", "Não definida")
             st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
 
+            # Mostrar a observação do cliente com destaque
+            obs_cliente = result.get("obs_cliente", None)  # Obtém a observação do cliente do resultado
+
+            st.subheader("📌 Observação do Cliente")
+
+            if obs_cliente:
+                st.info(f"🔍 **Observação:** {obs_cliente}")
+            else:
+                st.warning("⚠️ **Sem observações registradas para este cliente.**")
+                
             st.success("✅ Dispositivo encontrado com sucesso!")
 
             for detalhe in result.get("detalhes", []):
