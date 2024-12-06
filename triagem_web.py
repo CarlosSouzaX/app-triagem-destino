@@ -29,14 +29,28 @@ with col1:
     if st.button("Buscar", key="buscar_device"):
         result = buscar_modelo_por_device(df, device_input)
         
-        if result["status"] == "success":
-            st.success(f"✅ Marca: **{result['marca']}**")
-            st.success(f"✅ IMEI: **{result['imei']}**")
-        elif result["status"] == "warning":
-            st.warning(f"⚠️ {result['message']}")
-        else:  # "error"
-            st.error(f"❌ {result['message']}")
+        # Verifica o status geral
+    if result["status"] == "success":
+        st.success("✅ Dispositivo encontrado com sucesso!")
+    elif result["status"] == "warning":
+        st.warning(f"⚠️ {result['message']}")
+        st.stop()  # Interrompe o processamento adicional
+    elif result["status"] == "error":
+        st.error(f"❌ {result['message']}")
+        st.stop()  # Interrompe o processamento adicional
 
+    # Exibe os detalhes de cada campo (marca, IMEI, etc.)
+    for detalhe in result.get("detalhes", []):
+        campo = detalhe["campo"]
+        status = detalhe["status"]
+        valor = detalhe["valor"]
+
+        if status == "success":
+            st.success(f"✅ {campo.capitalize()}: **{valor}**")
+        elif status == "warning":
+            st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+        elif status == "error":
+            st.error(f"❌ {campo.capitalize()}: {valor}")
         
 
 # Divisor vertical na segunda coluna
