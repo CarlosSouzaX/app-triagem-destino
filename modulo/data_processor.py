@@ -140,7 +140,7 @@ def buscar_modelo_por_device(df, device_input):
             modelo,
             imei_status,
             status_sr,
-            modelos_ativos
+            #modelos_ativos
         )
 
         # Adiciona a Esteira ao resultado final
@@ -173,7 +173,7 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_pa
     # Verifica as condições para Garantia Funcional (InHouse - Reparo do Mesmo)
 
     if (
-        modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
+        #modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
         imei_status == "success" and  # IMEI deve estar válido
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
         garantia_funcional == 1 and  # Garantia funcional deve ser 1 (Sim)
