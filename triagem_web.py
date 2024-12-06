@@ -100,16 +100,15 @@ with col1:
                 elif status == "error":
                     st.error(f"❌ {campo.capitalize()}: {valor}")
 
-                # Exemplo de valor do status_sr
-                valor_status_sr = "open"  # Altere para testar diferentes valores
 
 
                 # Verifica se o valor está no mapeamento
-                if campo == "status_sr" and valor in status_componentes:
-                    componente = status_componentes[valor]
-                    componente(f"**Status SR:** {valor.capitalize()}")
-                else:
-                    st.warning("⚠️ **Status SR:** Status desconhecido.")
+                if campo == "status_sr" and status == "success":
+                    if valor in status_componentes:
+                        componente = status_componentes[valor]
+                        componente(f"**Status SR:** {valor.capitalize()}")
+                    else:
+                        st.warning("⚠️ **Status SR:** Status desconhecido.")
 
                 if campo == "supplier" and status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
