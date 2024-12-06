@@ -12,14 +12,9 @@ st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="�
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
-USECOLS = [0, 1, 2, 3, 4, 5, 6]
+USECOLS = [0, 1, 2, 3, 4, 5, 6, 7]
 
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
-
-st.write("Estrutura do DataFrame:")
-st.write(df.head())  # Exibe as primeiras linhas do DataFrame
-st.write("Colunas do DataFrame:", df.columns.tolist())  # Exibe os nomes das colunas
-
 
 # Título principal
 st.title("📋 Sistema de Triagem")

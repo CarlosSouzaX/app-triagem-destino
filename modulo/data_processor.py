@@ -4,14 +4,14 @@ from modulo.verificar_imei import verificar_imei
 
 def buscar_modelo_por_device(df, device_input):
     """
-    Realiza a busca do modelo e informações associadas a partir do número do Device.
+    Realiza a busca do modelo e informações associadas ao número do Device e campos relacionados à SR.
 
     Args:
         df (pd.DataFrame): DataFrame com os dados.
         device_input (str): Número do Device fornecido pelo usuário.
 
     Returns:
-        dict: Dicionário com status e informações da busca (marca, IMEI ou mensagens de erro).
+        dict: Dicionário com status e informações da busca (marca, IMEI, modelo, SR, etc.).
     """
     try:
         # Valida a entrada
@@ -26,7 +26,7 @@ def buscar_modelo_por_device(df, device_input):
             return {"status": "error", "message": "A coluna 'Device' não existe no DataFrame."}
 
         # Filtra pelo Device
-        resultado = df.loc[df["device"] == device_input_float, df.columns[1:7]]
+        resultado = df.loc[df["device"] == device_input_float, df.columns[1:]]
         if resultado.empty:
             return {"status": "error", "message": f"Device '{device_input}' não encontrado no DataFrame."}
 
@@ -57,7 +57,7 @@ def buscar_modelo_por_device(df, device_input):
                 resultado_final["detalhes"].append({"campo": "imei", "status": "warning", "valor": "IMEI Não Válido"})
         else:
             resultado_final["detalhes"].append({"campo": "imei", "status": "error", "valor": "IMEI Não Disponível / Vazia"})
-        
+
         # Verifica o Modelo
         modelo = resultado.iloc[0, 2]  # Supondo que "modelo" está na terceira coluna
         if pd.notnull(modelo):
@@ -68,6 +68,41 @@ def buscar_modelo_por_device(df, device_input):
         else:
             resultado_final["detalhes"].append({"campo": "modelo", "status": "error", "valor": "Modelo Não Disponível / Vazio"})
 
+        # Verifica a SR
+        sr = resultado.iloc[0, 5]  # Supondo que "sr" está na quinta coluna
+        if pd.notnull(sr):
+            resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr})
+        else:
+            resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "Origem Duvidosa"})
+
+        # Verifica o Status da SR
+        status_sr = resultado.iloc[0, 6]  # Supondo que "status_sr" está na sexta coluna
+        status_cores = {
+            "tracked": "laranja",
+            "open": "verde",
+            "closed": "azul",
+            "lost_in_delivery": "cinza",
+            "rejected_documents": "vermelho",
+            "arrived": "amarelo",
+            "swapped": "laranja",
+            "logistics_failure_from_pitzi": "cinza",
+            "expired": "cinza",
+            "rejected_closed": "vermelho",
+            "rejected_sent": "vermelho",
+            "sent": "laranja",
+        }
+        if pd.notnull(status_sr) and status_sr in status_cores:
+            cor = status_cores[status_sr]
+            resultado_final["detalhes"].append({"campo": "status_sr", "status": "success", "valor": f"{status_sr} ({cor})"})
+        else:
+            resultado_final["detalhes"].append({"campo": "status_sr", "status": "error", "valor": "Status Desconhecido"})
+
+        # Verifica o Supplier
+        supplier = resultado.iloc[0, 4]  # Supondo que "supplier" está na sétima coluna
+        if pd.notnull(supplier):
+            resultado_final["detalhes"].append({"campo": "supplier", "status": "success", "valor": "Externo"})
+        else:
+            resultado_final["detalhes"].append({"campo": "supplier", "status": "success", "valor": "Pitzi"})
 
         return resultado_final
 
