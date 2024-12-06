@@ -115,7 +115,7 @@ def buscar_modelo_por_device(df, device_input):
             resultado_final["detalhes"].append({"campo": "supplier", "status": "success", "valor": "Pitzi"})
 
        # Carrega os modelos ativos de um arquivo externo
-        modelos_ativos = carregar_modelos_ativos_json("modelos_ativos.json")
+        modelos_ativos = carregar_modelos_ativos_json()
 
         # Coleta os dados necessários
         parceiro = resultado.iloc[0, 7]  # Supondo que "parceiro" está na oitava coluna
