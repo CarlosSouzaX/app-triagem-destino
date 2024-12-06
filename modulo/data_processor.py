@@ -91,9 +91,12 @@ def buscar_modelo_por_device(df, device_input):
 
         # Verifica a SR
         sr = resultado.iloc[0, 5]  # Supondo que "sr" está na sexta coluna
-        sr_int = int(sr)
-        if pd.notnull(sr_int):
-            resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr_int})
+        if pd.notnull(sr):
+            try:
+                sr_int = int(sr)
+                resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr_int})
+            except ValueError:
+                resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "SR contém caracteres inválidos."})
         else:
             resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "Origem Duvidosa"})
 
