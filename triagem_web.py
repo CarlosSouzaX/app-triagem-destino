@@ -32,8 +32,8 @@ with col1:
         result = buscar_modelo_por_device(df, device_input)
 
          # Exibe o resultado completo na tela
-        ##st.write("🔍 Resultado da busca:")
-        ##st.write(result)
+        st.write("🔍 Resultado da busca:")
+        st.write(result)
 
         # Mapeamento de cores para o Status da SR
         status_cores = {
@@ -106,7 +106,7 @@ with col1:
             # Exibe a Esteira de Atendimento
             esteira = result.get("esteira", "Não definida")
             st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
-            
+
         elif result["status"] == "warning":
             st.warning(f"⚠️ {result['message']}")
         elif result["status"] == "error":
