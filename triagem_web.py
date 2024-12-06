@@ -59,7 +59,18 @@ with col1:
 
             # Exibe dados do Device
             st.subheader("📱 Dados do Device")
-
+            for detalhe in result.get("detalhes", []):
+                campo = detalhe["campo"]
+                status = detalhe["status"]
+                valor = detalhe["valor"]
+         
+                if status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
+        
             
 
             # Mostrar a observação do cliente com destaque
