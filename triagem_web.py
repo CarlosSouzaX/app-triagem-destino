@@ -35,20 +35,19 @@ with col1:
         #st.write("🔍 Resultado da busca:")
         #st.write(result)
 
-        # Mapeamento de cores para o Status da SR
-        status_cores = {
-            "tracked": "#FFA500",  # Laranja
-            "open": "#008000",  # Verde
-            "closed": "#0000FF",  # Azul
-            "lost_in_delivery": "#808080",  # Cinza
-            "rejected_documents": "#FF0000",  # Vermelho
-            "arrived": "#FFFF00",  # Amarelo
-            "swapped": "#FFA500",  # Laranja
-            "logistics_failure_from_pitzi": "#808080",  # Cinza
-            "expired": "#808080",  # Cinza
-            "rejected_closed": "#FF0000",  # Vermelho
-            "rejected_sent": "#FF0000",  # Vermelho
-            "sent": "#FFA500",  # Laranja
+        # Mapeamento de cores e ícones para o status_sr
+        status_componentes = {
+            "open": st.success,  # Verde
+            "arrived": st.info,  # Azul claro
+            "closed": st.info,  # Azul claro
+            "lost_in_delivery": st.warning,  # Amarelo
+            "rejected_documents": st.error,  # Vermelho
+            "swapped": st.warning,  # Amarelo
+            "logistics_failure_from_pitzi": st.warning,  # Amarelo
+            "expired": st.warning,  # Amarelo
+            "rejected_closed": st.error,  # Vermelho
+            "rejected_sent": st.error,  # Vermelho
+            "sent": st.info,  # Azul claro
         }
 
         # Verifica o status geral
@@ -101,23 +100,16 @@ with col1:
                 elif status == "error":
                     st.error(f"❌ {campo.capitalize()}: {valor}")
 
-                if campo == "status_sr" and status == "success":
-                    # Aplica a cor de fundo correspondente ao status
-                    cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
-                    st.markdown(
-                        f"""
-                        <div style="
-                            background-color: {cor};
-                            color: white;
-                            padding: 10px;
-                            border-radius: 5px;
-                            margin-bottom: 10px;
-                        ">
-                            <strong>Status SR:</strong> {valor}
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+                # Exemplo de valor do status_sr
+                valor_status_sr = "open"  # Altere para testar diferentes valores
+
+
+                # Verifica se o valor está no mapeamento
+                if campo == "status_sr" and valor in status_componentes:
+                    componente = status_componentes[valor]
+                    componente(f"**Status SR:** {valor.capitalize()}")
+                else:
+                    st.warning("⚠️ **Status SR:** Status desconhecido.")
 
                 if campo == "supplier" and status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
