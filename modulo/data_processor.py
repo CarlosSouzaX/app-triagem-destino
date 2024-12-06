@@ -70,7 +70,8 @@ def buscar_modelo_por_device(df, device_input):
 
         # Verifica a SR
         sr = resultado.iloc[0, 5]  # Supondo que "sr" está na quinta coluna
-        if pd.notnull(sr):
+        sr_int = int(sr)
+        if pd.notnull(sr_int):
             resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr})
         else:
             resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "Origem Duvidosa"})
@@ -93,9 +94,9 @@ def buscar_modelo_por_device(df, device_input):
         }
         if pd.notnull(status_sr) and status_sr in status_cores:
             cor = status_cores[status_sr]
-            resultado_final["detalhes"].append({"campo": "status_sr", "status": "success", "valor": f"{status_sr} ({cor})"})
+            resultado_final["detalhes"].append({"campo": "STATUS SR", "status": "success", "valor": f"{status_sr} ({cor})"})
         else:
-            resultado_final["detalhes"].append({"campo": "status_sr", "status": "error", "valor": "Status Desconhecido"})
+            resultado_final["detalhes"].append({"campo": "STATUS SR", "status": "error", "valor": "Status Desconhecido"})
 
         # Verifica o Supplier
         supplier = resultado.iloc[0, 4]  # Supondo que "supplier" está na sétima coluna
