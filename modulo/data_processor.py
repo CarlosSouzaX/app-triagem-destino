@@ -128,8 +128,9 @@ def buscar_modelo_por_device(df, device_input):
         resultado_final["reincidente"] = reincidente
         mdm_payjoy = resultado.iloc[0, 11]  # Supondo que "mdm_payjoy" está na décima segunda coluna
         resultado_final["mdm_payjoy"] = mdm_payjoy
+        obs_cliente = resultado.iloc[0, 12]  # Supondo que "obs_cliente" está na décima terceira coluna
+        resultado_final["obs_cliente"] = obs_cliente 
         
-
         # Determina a Esteira
         esteira = determinar_esteira(
             parceiro,
@@ -181,7 +182,7 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_pa
         mdm_payjoy == "runoff" and  # Deve ser vazio (não PayJoy)
         origem == "new"  # Origem deve ser "new"
     ):
-        return "RUNOFF - Garantia Funcional - (InHouse - Reparo do Mesmo)"
+        return "RUNOFF - Garantia Funcional"
     
     # Caso nenhuma condição específica seja atendida
     return "Esteira Padrão"
