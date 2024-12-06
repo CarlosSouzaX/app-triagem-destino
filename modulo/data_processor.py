@@ -177,7 +177,7 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_pa
         imei_status == "success" and  # IMEI deve estar válido
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
         garantia_funcional == 1 and  # Garantia funcional deve ser 1 (Sim)
-        reincidente == 0 and  # Não deve ser reincidente 
+        not reincidente and  # Não deve ser reincidente 
         mdm_payjoy == "runoff" and  # Deve ser vazio (não PayJoy)
         origem == "new"  # Origem deve ser "new"
     ):
