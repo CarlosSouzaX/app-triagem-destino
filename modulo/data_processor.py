@@ -139,7 +139,7 @@ def buscar_modelo_por_device(df, device_input):
             mdm_payjoy,
             modelo,
             imei_status,
-            status_sr,
+            status_sr
             #modelos_ativos
         )
 
