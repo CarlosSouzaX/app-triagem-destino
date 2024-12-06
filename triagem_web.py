@@ -38,16 +38,20 @@ with col1:
         # Mapeamento de cores e ícones para o status_sr
         status_componentes = {
             "open": st.success,  # Verde
-            "arrived": st.info,  # Azul claro
-            "closed": st.info,  # Azul claro
-            "lost_in_delivery": st.warning,  # Amarelo
-            "rejected_documents": st.error,  # Vermelho
+            "arrived": st.success,  # Verde
+
+            "tracked": st.warning,  # Amarelo
             "swapped": st.warning,  # Amarelo
-            "logistics_failure_from_pitzi": st.warning,  # Amarelo
-            "expired": st.warning,  # Amarelo
+            "sent": st.warning,  # Amarelo
+
+            "closed": st.info,  # Azul Claro
+
+            "lost_in_delivery": st.error,  # Vermelho
+            "rejected_documents": st.error,  # Vermelho
+            "logistics_failure_from_pitzi": st.error,  # Vermelho
+            "expired": st.error,  # Vermelho
             "rejected_closed": st.error,  # Vermelho
-            "rejected_sent": st.error,  # Vermelho
-            "sent": st.info,  # Azul claro
+            "rejected_sent": st.error  # Vermelho
         }
 
         # Verifica o status geral
