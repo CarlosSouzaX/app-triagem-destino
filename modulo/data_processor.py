@@ -72,7 +72,7 @@ def buscar_modelo_por_device(df, device_input):
         sr = resultado.iloc[0, 5]  # Supondo que "sr" está na quinta coluna
         sr_int = int(sr)
         if pd.notnull(sr_int):
-            resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr})
+            resultado_final["detalhes"].append({"campo": "sr", "status": "success", "valor": sr_int})
         else:
             resultado_final["detalhes"].append({"campo": "sr", "status": "warning", "valor": "Origem Duvidosa"})
 
