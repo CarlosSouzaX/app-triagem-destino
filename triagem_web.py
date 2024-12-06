@@ -57,7 +57,7 @@ with col1:
 
                 if campo == "status_sr" and status == "success":
                     # Aplica a cor correspondente ao status no front-end
-                    cor = status_cores.get(valor, "black")  # Cor padrão é preto se não encontrado
+                    cor = status_cores.get(valor, "yellow")  # Cor padrão é preto se não encontrado
                     st.markdown(f"<span style='color:{cor}; font-weight:bold;'>STATUS SR: {valor}</span>", unsafe_allow_html=True)
                 elif status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
