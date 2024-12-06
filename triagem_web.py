@@ -33,7 +33,7 @@ with col1:
 
          # Exibe o resultado completo na tela
         st.write("🔍 Resultado da busca:")
-        st.write(result["esteira"])
+        st.write(result)
 
         # Mapeamento de cores para o Status da SR
         status_cores = {

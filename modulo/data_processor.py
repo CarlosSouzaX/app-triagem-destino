@@ -119,14 +119,12 @@ def buscar_modelo_por_device(df, device_input):
 
         # Coleta os dados necessários
         parceiro = resultado.iloc[0, 7]  # Supondo que "parceiro" está na oitava coluna
+        resultado_final["parceiro"] = parceiro
         origem = resultado.iloc[0, 8]  # Supondo que "origem" está na nona coluna
         garantia_funcional = resultado.iloc[0, 9]  # Supondo que "garantia_funcional" está na décima coluna
         reincidente = resultado.iloc[0, 10]  # Supondo que "reincidente" está na décima primeira coluna
         mdm_payjoy = resultado.iloc[0, 11]  # Supondo que "mdm_payjoy" está na décima segunda coluna
-        modelo = resultado.iloc[0, 2]  # Modelo na terceira coluna
-        imei_status = "success"  # Exemplo de status do IMEI
-        status_sr = resultado.iloc[0, 5]  # Status da SR na sexta coluna
-
+     
         # Determina a Esteira
         esteira = determinar_esteira(
             parceiro,
