@@ -1,5 +1,26 @@
 import pandas as pd
 from modulo.verificar_imei import verificar_imei
+import os
+import json
+
+def carregar_modelos_ativos_json():
+    """
+    Carrega a lista de modelos ativos para reparo de um arquivo JSON localizado na pasta 'data'.
+
+    Returns:
+        list: Lista de modelos ativos.
+    """
+    # Caminho absoluto para o arquivo JSON
+    base_dir = os.path.dirname(__file__)  # Diretório atual do data_processor.py
+    caminho_modelos_ativos = os.path.join(base_dir, "../data/modelos_ativos.json")
+
+    try:
+        with open(caminho_modelos_ativos, "r") as f:
+            data = json.load(f)
+        return data.get("modelos_ativos", [])  # Retorna a lista de modelos ativos
+    except Exception as e:
+        print(f"Erro ao carregar modelos ativos: {e}")
+        return []
 
 
 def buscar_modelo_por_device(df, device_input):
