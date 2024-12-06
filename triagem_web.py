@@ -93,7 +93,15 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
+
                 if campo == "sr" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
+
+                if campo == "status_sr" and status == "success":
                     # Aplica a cor de fundo correspondente ao status
                     cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
                     st.markdown(
@@ -110,13 +118,6 @@ with col1:
                         """,
                         unsafe_allow_html=True,
                     )
-
-                if campo == "status_sr" and status == "success":
-                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                elif status == "warning":
-                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                elif status == "error":
-                    st.error(f"❌ {campo.capitalize()}: {valor}")
 
                 if campo == "supplier" and status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
@@ -134,37 +135,6 @@ with col1:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
                 st.warning("⚠️ **Sem observações registradas para este cliente.**")
-                
-            
-
-            for detalhe in result.get("detalhes", []):
-                campo = detalhe["campo"]
-                status = detalhe["status"]
-                valor = detalhe["valor"]
-
-                if campo == "status_sr" and status == "success":
-                    # Aplica a cor de fundo correspondente ao status
-                    cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
-                    st.markdown(
-                        f"""
-                        <div style="
-                            background-color: {cor};
-                            color: white;
-                            padding: 10px;
-                            border-radius: 5px;
-                            margin-bottom: 10px;
-                        ">
-                            <strong>Status SR:</strong> {valor}
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
-                elif status == "success":
-                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                elif status == "warning":
-                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                elif status == "error":
-                    st.error(f"❌ {campo.capitalize()}: {valor}")
 
             # Exibe a Esteira de Atendimento
             esteira = result.get("esteira", "Não definida")
