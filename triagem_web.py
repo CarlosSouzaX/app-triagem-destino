@@ -26,31 +26,29 @@ col1, col2, col3 = st.columns([1, 0.1, 1])  # Ajustar proporções das colunas
 with col1:
     st.header("🔍 Buscar Modelo pelo Device")
     device_input = st.text_input("Digite o número do Device:")
+    
     if st.button("Buscar", key="buscar_device"):
+    # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
-        
+
         # Verifica o status geral
-    if result["status"] == "success":
-        st.success("✅ Dispositivo encontrado com sucesso!")
-    elif result["status"] == "warning":
-        st.warning(f"⚠️ {result['message']}")
-        st.stop()  # Interrompe o processamento adicional
-    elif result["status"] == "error":
-        st.error(f"❌ {result['message']}")
-        st.stop()  # Interrompe o processamento adicional
+        if result["status"] == "success":
+            st.success("✅ Dispositivo encontrado com sucesso!")
+            for detalhe in result.get("detalhes", []):
+                campo = detalhe["campo"]
+                status = detalhe["status"]
+                valor = detalhe["valor"]
 
-    # Exibe os detalhes de cada campo (marca, IMEI, etc.)
-    for detalhe in result.get("detalhes", []):
-        campo = detalhe["campo"]
-        status = detalhe["status"]
-        valor = detalhe["valor"]
-
-        if status == "success":
-            st.success(f"✅ {campo.capitalize()}: **{valor}**")
-        elif status == "warning":
-            st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-        elif status == "error":
-            st.error(f"❌ {campo.capitalize()}: {valor}")
+                if status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
+        elif result["status"] == "warning":
+            st.warning(f"⚠️ {result['message']}")
+        elif result["status"] == "error":
+            st.error(f"❌ {result['message']}")
         
 
 # Divisor vertical na segunda coluna
