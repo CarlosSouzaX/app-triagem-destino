@@ -55,7 +55,7 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-                if campo == "STATUS SR" and status == "success":
+                if campo == "status_sr" and status == "success":
                     # Aplica a cor de fundo correspondente ao status
                     cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
                     st.markdown(
