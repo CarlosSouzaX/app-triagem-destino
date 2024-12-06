@@ -67,19 +67,19 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-            if campo == "modelo" and status == "success":
-                st.success(f"✅ {campo.capitalize()}: **{valor}**")
-            elif status == "warning":
-                st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-            elif status == "error":
-                st.error(f"❌ {campo.capitalize()}: {valor}")
+                if campo == "modelo" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
 
-            if campo == "imei" and status == "success":
-                st.success(f"✅ {campo.capitalize()}: **{valor}**")
-            elif status == "warning":
-                st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-            elif status == "error":
-                st.error(f"❌ {campo.capitalize()}: {valor}")
+                if campo == "imei" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
         
             
             # # Exibe dados da SR
