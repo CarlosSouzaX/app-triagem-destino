@@ -68,12 +68,13 @@ with col1:
                 valor = detalhe["valor"]
 
                  # Exibe o campo com base no status
-                if status == "success":
-                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                elif status == "warning":
-                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                elif status == "error":
-                    st.error(f"❌ {campo.capitalize()}: {valor}")
+                if campo == "marca" or campo == "modelo" or campo == "imei":
+                    if status == "success":
+                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
         
             
             # # Exibe dados da SR
