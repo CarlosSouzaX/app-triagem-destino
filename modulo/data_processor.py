@@ -1,4 +1,6 @@
 import pandas as pd
+from modulo.verificar_imei import verificar_imei
+
 
 def buscar_modelo_por_device(df, device_input):
     """
@@ -43,7 +45,10 @@ def buscar_modelo_por_device(df, device_input):
         if pd.notnull(imei):
             try:
                 imei_int = int(imei)  # Converte para inteiro
-                resultado_final["detalhes"].append({"campo": "imei", "status": "success", "valor": imei_int})
+                if verificar_imei(imei_int):
+                    resultado_final["detalhes"].append({"campo": "imei", "status": "success", "valor": imei_int})
+                else:
+                    resultado_final["detalhes"].append({"campo": "imei", "status": "warning", "valor": "IMEI Não Válido"})
             except ValueError:
                 resultado_final["detalhes"].append({"campo": "imei", "status": "warning", "valor": "IMEI Não Válido"})
         else:
