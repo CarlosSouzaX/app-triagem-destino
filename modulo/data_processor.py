@@ -86,11 +86,74 @@ def buscar_modelo_por_device(df, device_input):
         # Verifica o Supplier
         supplier = resultado.iloc[0, 4]  # Supondo que "supplier" está na quinta coluna
         if pd.notnull(supplier):
-            resultado_final["detalhes"].append({"campo": "supplier", "status": "success", "valor": "Externo"})
+            resultado_final["detalhes"].append({"campo": "supplier", "status": "warning", "valor": "Externo"})
         else:
             resultado_final["detalhes"].append({"campo": "supplier", "status": "success", "valor": "Pitzi"})
+
+       # Carrega os modelos ativos de um arquivo externo
+        modelos_ativos = carregar_modelos_ativos_json("modelos_ativos.json")
+
+        # Coleta os dados necessários
+        parceiro = resultado.iloc[0, 7]  # Supondo que "parceiro" está na oitava coluna
+        origem = resultado.iloc[0, 8]  # Supondo que "origem" está na nona coluna
+        garantia_funcional = resultado.iloc[0, 9]  # Supondo que "garantia_funcional" está na décima coluna
+        reincidente = resultado.iloc[0, 10]  # Supondo que "reincidente" está na décima primeira coluna
+        mdm_payjoy = resultado.iloc[0, 11]  # Supondo que "mdm_payjoy" está na décima segunda coluna
+        modelo = resultado.iloc[0, 2]  # Modelo na terceira coluna
+        imei_status = "success"  # Exemplo de status do IMEI
+        status_sr = resultado.iloc[0, 5]  # Status da SR na sexta coluna
+
+        # Determina a Esteira
+        esteira = determinar_esteira(
+            parceiro,
+            origem,
+            garantia_funcional,
+            reincidente,
+            mdm_payjoy,
+            modelo,
+            imei_status,
+            status_sr,
+            modelos_ativos
+        )
+
+        # Adiciona a Esteira ao resultado final
+        resultado_final["esteira"] = esteira
 
         return resultado_final
 
     except ValueError:
         return {"status": "error", "message": "O valor inserido deve ser numérico."}
+
+
+def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_payjoy, modelo, imei_status, status_sr, modelos_ativos):
+    """
+    Determina a Esteira de Atendimento com base nos dados coletados.
+
+    Args:
+        parceiro (str): Parceiro responsável.
+        origem (str): Origem do atendimento.
+        garantia_funcional (int): Indica se há garantia funcional (1 = Sim, 0 = Não).
+        reincidente (bool): Indica se é um caso reincidente.
+        mdm_payjoy (bool): Indica se o MDM PayJoy está presente.
+        modelo (str): Modelo do dispositivo.
+        imei_status (str): Status do IMEI (success, warning, error).
+        status_sr (str): Status da SR.
+        modelos_ativos (list): Lista de modelos ativos para reparo.
+
+    Returns:
+        str: Nome da Esteira de Atendimento.
+    """
+    # Verifica as condições para Garantia Funcional (InHouse - Reparo do Mesmo)
+    if (
+        modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
+        imei_status == "success" and  # IMEI deve estar válido
+        status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
+        garantia_funcional == 1 and  # Garantia funcional deve ser 1 (Sim)
+        not mdm_payjoy and  # Não deve ser PayJoy
+        not reincidente and  # Não deve ser reincidente
+        origem == "new"  # Origem deve ser "new"
+    ):
+        return "Garantia Funcional (InHouse - Reparo do Mesmo)"
+    
+    # Caso nenhuma condição específica seja atendida
+    return "Esteira Padrão"

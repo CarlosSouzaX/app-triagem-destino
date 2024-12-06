@@ -50,6 +50,11 @@ with col1:
         # Verifica o status geral
         if result["status"] == "success":
             st.success("✅ Dispositivo encontrado com sucesso!")
+
+            # Exibe a Esteira de Atendimento
+            esteira = result.get("esteira", "Não definida")
+            st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
+            
             for detalhe in result.get("detalhes", []):
                 campo = detalhe["campo"]
                 status = detalhe["status"]
@@ -67,7 +72,7 @@ with col1:
                             border-radius: 5px;
                             margin-bottom: 10px;
                         ">
-                            <strong>STATUS SR:</strong> {valor}
+                            <strong>Status SR:</strong> {valor}
                         </div>
                         """,
                         unsafe_allow_html=True,
