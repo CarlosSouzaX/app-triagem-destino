@@ -31,6 +31,10 @@ with col1:
     # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
 
+         # Exibe o resultado completo na tela
+        st.write("🔍 Resultado da busca:")
+        st.write(result)
+
         # Mapeamento de cores para o Status da SR
         status_cores = {
             "tracked": "#FFA500",  # Laranja
