@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
+from modulo.data_processor import buscar_modelo_por_device
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
@@ -21,38 +22,17 @@ with col1:
     st.header("🔍 Buscar Modelo pelo Device")
     device_input = st.text_input("Digite o número do Device:")
     if st.button("Buscar", key="buscar_device"):
-        if not device_input.strip():
-            st.warning("⚠️ Por favor, insira um valor válido para o Device.")
-        else:
-            try:
-                # Converter o input para float
-                device_input_float = float(device_input.strip())
-                if "device" in df.columns:
-                    # Filtrar pelo Device no DataFrame
-                    resultado = df.loc[df["device"] == device_input_float, df.columns[1:7]]
-                    if not resultado.empty:
-                        # Verificar e exibir a marca
-                        marca = resultado.iloc[0, 1]
-                        if pd.notnull(marca):
-                            st.success(f"✅ Marca: **{marca}**")
-                        else:
-                            st.warning("⚠️ Marca não disponível.")
+        result = buscar_modelo_por_device(df, device_input)
+        
+        if result["status"] == "success":
+            st.success(f"✅ Marca: **{result['marca']}**")
+            st.success(f"✅ IMEI: **{result['imei']}**")
+        elif result["status"] == "warning":
+            st.warning(f"⚠️ {result['message']}")
+        else:  # "error"
+            st.error(f"❌ {result['message']}")
 
-                        # Verificar e exibir o IMEI
-                        try:
-                            imei = int(resultado.iloc[0, 3]) if pd.notnull(resultado.iloc[0, 3]) else None
-                            if imei:
-                                st.success(f"✅ IMEI: **{imei}**")
-                            else:
-                                st.warning("⚠️ IMEI não disponível.")
-                        except ValueError:
-                            st.error("❌ O valor do IMEI não é válido.")
-                    else:
-                        st.error(f"❌ Device '{device_input}' não encontrado no DataFrame.")
-                else:
-                    st.error("❌ As colunas 'Device' e/ou 'Modelo' não existem no DataFrame.")
-            except ValueError:
-                st.error("❌ O valor inserido deve ser numérico.")
+        
 
 # Divisor vertical na segunda coluna
 with col2:
