@@ -128,6 +128,7 @@ def buscar_modelo_por_device(df, device_input):
         resultado_final["reincidente"] = reincidente
         mdm_payjoy = resultado.iloc[0, 11]  # Supondo que "mdm_payjoy" está na décima segunda coluna
         resultado_final["mdm_payjoy"] = mdm_payjoy
+        
 
         # Determina a Esteira
         esteira = determinar_esteira(
@@ -170,13 +171,14 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_pa
         str: Nome da Esteira de Atendimento.
     """
     # Verifica as condições para Garantia Funcional (InHouse - Reparo do Mesmo)
+
     if (
         modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
         imei_status == "success" and  # IMEI deve estar válido
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
         garantia_funcional == 1 and  # Garantia funcional deve ser 1 (Sim)
-        not mdm_payjoy and  # Não deve ser PayJoy
-        not reincidente and  # Não deve ser reincidente
+        reincidente == False and  # Não deve ser reincidente 
+        not mdm_payjoy and  # Deve ser vazio (não PayJoy)
         origem == "new"  # Origem deve ser "new"
     ):
         return "Garantia Funcional (InHouse - Reparo do Mesmo)"
