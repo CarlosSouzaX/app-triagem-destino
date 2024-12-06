@@ -42,17 +42,32 @@ def buscar_modelo_por_device(df, device_input):
 
         # Verifica o IMEI
         imei = resultado.iloc[0, 3]  # Supondo que "imei" está na quarta coluna
+        imei_status = "error"
         if pd.notnull(imei):
             try:
                 imei_int = int(imei)  # Converte para inteiro
                 if verificar_imei(imei_int):
+                    imei_status = "success"
                     resultado_final["detalhes"].append({"campo": "imei", "status": "success", "valor": imei_int})
                 else:
+                    imei_status = "warning"
                     resultado_final["detalhes"].append({"campo": "imei", "status": "warning", "valor": "IMEI Não Válido"})
             except ValueError:
+                imei_status = "warning"
                 resultado_final["detalhes"].append({"campo": "imei", "status": "warning", "valor": "IMEI Não Válido"})
         else:
             resultado_final["detalhes"].append({"campo": "imei", "status": "error", "valor": "IMEI Não Disponível / Vazia"})
+        
+        # Verifica o Modelo
+        modelo = resultado.iloc[0, 2]  # Supondo que "modelo" está na terceira coluna
+        if pd.notnull(modelo):
+            if imei_status == "success":
+                resultado_final["detalhes"].append({"campo": "modelo", "status": "success", "valor": modelo})
+            else:
+                resultado_final["detalhes"].append({"campo": "modelo", "status": "warning", "valor": "Modelo Duvidoso"})
+        else:
+            resultado_final["detalhes"].append({"campo": "modelo", "status": "error", "valor": "Modelo Não Disponível / Vazio"})
+
 
         return resultado_final
 
