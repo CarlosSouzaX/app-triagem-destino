@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
+#from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
 from modulo.data_processor import buscar_modelo_por_device
 

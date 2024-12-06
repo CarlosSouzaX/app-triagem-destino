@@ -4,14 +4,17 @@ from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
 from modulo.data_processor import buscar_modelo_por_device
 
+
+
+# Configurar o layout para "wide"
+st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
+
+
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
 USECOLS = [0, 1, 2, 3, 4, 5, 6]
 
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
-
-# Configurar o layout para "wide"
-st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
 
 # Título principal
 st.title("📋 Sistema de Triagem")
