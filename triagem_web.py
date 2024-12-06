@@ -71,6 +71,13 @@ with col1:
                 elif status == "error":
                     st.error(f"❌ {campo.capitalize()}: {valor}")
 
+                if campo == "modelo" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
+
                 if campo == "imei" and status == "success":
                     st.success(f"✅ {campo.capitalize()}: **{valor}**")
                 elif status == "warning":
@@ -79,6 +86,44 @@ with col1:
                     st.error(f"❌ {campo.capitalize()}: {valor}")
         
             
+            # # Exibe dados da SR
+            st.subheader("📄 Dados da SR")
+            for detalhe in result.get("detalhes", []):
+                campo = detalhe["campo"]
+                status = detalhe["status"]
+                valor = detalhe["valor"]
+
+                if campo == "sr" and status == "success":
+                    # Aplica a cor de fundo correspondente ao status
+                    cor = status_cores.get(valor, "#000000")  # Preto como cor padrão
+                    st.markdown(
+                        f"""
+                        <div style="
+                            background-color: {cor};
+                            color: white;
+                            padding: 10px;
+                            border-radius: 5px;
+                            margin-bottom: 10px;
+                        ">
+                            <strong>Status SR:</strong> {valor}
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                if campo == "status_sr" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
+
+                if campo == "supplier" and status == "success":
+                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                elif status == "warning":
+                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                elif status == "error":
+                    st.error(f"❌ {campo.capitalize()}: {valor}")
 
             # Mostrar a observação do cliente com destaque
             obs_cliente = result.get("obs_cliente", None)  # Obtém a observação do cliente do resultado
