@@ -186,5 +186,11 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff
     ):
         return "Esteira: (RUNOFF - InHouse Reparo do Mesmo)"
     
+    if (
+    
+        mdm_payjoy == "pay_joy" # Deve ser vazio
+    ):
+        return "Esteira: PAyJoy"
+    
     # Caso nenhuma condição específica seja atendida
     return "Esteira Padrão"
