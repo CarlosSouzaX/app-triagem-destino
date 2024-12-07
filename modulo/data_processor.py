@@ -126,17 +126,20 @@ def buscar_modelo_por_device(df, device_input):
         resultado_final["garantia_funcional"] = garantia_funcional
         reincidente = resultado.iloc[0, 10]  # Supondo que "reincidente" está na décima primeira coluna
         resultado_final["reincidente"] = reincidente
-        mdm_payjoy = resultado.iloc[0, 11]  # Supondo que "mdm_payjoy" está na décima segunda coluna
+        runoff = resultado.iloc[0, 11]  # Supondo que a flag "runoff" está na décima segunda coluna
+        resultado_final["runoff"] = runoff
+        mdm_payjoy = resultado.iloc[0, 12]  # Supondo que "mdm_payjoy" está na décima terceira coluna
         resultado_final["mdm_payjoy"] = mdm_payjoy
-        obs_cliente = resultado.iloc[0, 12]  # Supondo que "obs_cliente" está na décima terceira coluna
+        obs_cliente = resultado.iloc[0, 13]  # Supondo que "obs_cliente" está na décima quarta coluna
         resultado_final["obs_cliente"] = obs_cliente 
-        
+
         # Determina a Esteira
         esteira = determinar_esteira(
             parceiro,
             origem,
             garantia_funcional,
             reincidente,
+            runoff,
             mdm_payjoy,
             modelo,
             imei_status,
@@ -153,7 +156,7 @@ def buscar_modelo_por_device(df, device_input):
         return {"status": "error", "message": "O valor inserido deve ser numérico."}
 
 
-def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_payjoy, modelo, imei_status, status_sr, modelos_ativos):
+def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff, mdm_payjoy, modelo, imei_status, status_sr, modelos_ativos):
     """
     Determina a Esteira de Atendimento com base nos dados coletados.
 
@@ -174,15 +177,14 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, mdm_pa
     # Verifica as condições para Garantia Funcional (InHouse - Reparo do Mesmo)
 
     if (
-        #modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
-        imei_status == "success" and  # IMEI deve estar válido
+        modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
+        #imei_status == "success" and  # IMEI deve estar válido
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
-        garantia_funcional == 1 and  # Garantia funcional deve ser 1 (Sim)
         not reincidente and  # Não deve ser reincidente 
-        mdm_payjoy == "runoff" and  # Deve ser vazio (não PayJoy)
-        origem == "new"  # Origem deve ser "new"
+        runoff == "runoff" and  # Deve ser vazio (não default)
+        mdm_payjoy != "pay_joy"  # Deve ser vazio
     ):
-        return "RUNOFF - Garantia Funcional"
+        return "Esteira: (RUNOFF - InHouse Reparo do Mesmo)"
     
     # Caso nenhuma condição específica seja atendida
     return "Esteira Padrão"
