@@ -84,36 +84,18 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-
-                if campo == "sr" and status == "success":
-                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                elif status == "warning":
-                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                elif status == "error":
-                    st.error(f"❌ {campo.capitalize()}: {valor}")
-
-
-
-                # Verifica se o valor está no mapeamento
-                if campo == "status_sr" and status == "success":
-                    if valor in status_componentes:
-                        componente = status_componentes[valor]
-                        componente(f"**Status SR:** {valor.capitalize()}")
-                    else:
-                        st.warning("⚠️ **Status SR:** Status desconhecido.")
-
-                if campo == "supplier" and status == "success":
-                    st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                elif status == "warning":
-                    st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                elif status == "error":
-                    st.error(f"❌ {campo.capitalize()}: {valor}")
+                # Exibe o campo com base no status
+                if campo == "sr" or campo == "status_sr" or campo == "supplier":
+                    if status == "success":
+                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
 
             # Mostrar a observação do cliente com destaque
-            obs_cliente = result.get("obs_cliente", None)  # Obtém a observação do cliente do resultado
-
             st.subheader("📌 Observação do Cliente")
-
+            obs_cliente = result.get("obs_cliente", None)  # Obtém a observação do cliente do resultado
             if obs_cliente:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
