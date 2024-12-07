@@ -182,7 +182,7 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
         not reincidente and  # Não deve ser reincidente 
         runoff == "runoff"  # Deve ser vazio (não default)
-        #mdm_payjoy == None  # Deve ser vazio
+        mdm_payjoy == None  # Deve ser vazio
     ):
         return "Esteira: (RUNOFF - InHouse Reparo do Mesmo)"
     
