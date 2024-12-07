@@ -177,10 +177,10 @@ def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff
     # Verifica as condições para Garantia Funcional (InHouse - Reparo do Mesmo)
 
     if (
-        modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
+        #modelo in modelos_ativos and  # Verifica se o modelo está na lista de modelos ativos
         #imei_status == "success" and  # IMEI deve estar válido
         status_sr in ["open", "arrived"] and  # Status da SR deve ser "open" ou "arrived"
-        #not reincidente and  # Não deve ser reincidente 
+        not reincidente and  # Não deve ser reincidente 
         runoff == "runoff"  # Deve ser vazio (não default)
         #mdm_payjoy == None  # Deve ser vazio
     ):
