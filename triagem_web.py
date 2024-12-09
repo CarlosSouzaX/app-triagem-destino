@@ -100,25 +100,22 @@ with col1:
                 status = detalhe["status"]
                 valor = detalhe["valor"]
 
-                # Exibe o campo com base no status
                 if campo == "sr":
                     if status == "success":
                         st.success(f"✅ **SR:** **{valor}**")
                     elif status == "warning":
-                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                        st.warning(f"⚠️ **SR:** **{valor}**")
                     elif status == "error":
-                        st.error(f"❌ {campo.capitalize()}: {valor}")
-                        
-                # Exibe o campo com base no status
-                if campo == "sr" or campo == "supplier":
-                    if status == "success":
-                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                    elif status == "warning":
-                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-                    elif status == "error":
-                        st.error(f"❌ {campo.capitalize()}: {valor}")
+                        st.error(f"❌ **SR:** **{valor}**")
 
-                # Exibe o campo com base no status
+                if campo == "supplier":
+                    if status == "success":
+                        st.success(f"✅ **Supplier do Device:** **{valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ **Supplier do Device:** **{valor}**")
+                    elif status == "error":
+                        st.error(f"❌ **Supplier do Device:** **{valor}**")
+
                 if campo == "status_sr":
                     componente = status_componentes.get(valor)
                     if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
