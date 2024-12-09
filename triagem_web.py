@@ -141,33 +141,36 @@ def obter_esteira_estado():
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    # Obter esteira do estado
     esteira = obter_esteira_estado()
     if esteira:
         st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
 
-        # Obter perguntas com base na esteira
         perguntas = obter_entradas(esteira)
 
         if perguntas:
             progresso = st.session_state.get("progresso", 0)
 
+            # Exibir perguntas respondidas, se houver
             if progresso > 0:
-                exibir_perguntas_respondidas(perguntas, st.session_state.get("respostas", []))
+                exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
 
+            # Exibir a pergunta atual
             if progresso < len(perguntas) and not st.session_state.get("saida"):
                 pergunta_atual = perguntas[progresso]
                 st.subheader(f"❓ Pergunta {progresso + 1}")
                 st.markdown(f"**{pergunta_atual['texto']}**")
 
-                if st.button("✅ Sim", key=f"sim_{progresso}"):
-                    st.session_state.setdefault("respostas", []).append("sim")
-                    processar_resposta(pergunta_atual, "sim")
+                col_sim, col_nao = st.columns(2)
+                with col_sim:
+                    if st.button("✅ Sim", key=f"sim_{progresso}"):
+                        st.session_state["respostas"].append("sim")
+                        processar_resposta(pergunta_atual, "sim")
+                with col_nao:
+                    if st.button("❌ Não", key=f"nao_{progresso}"):
+                        st.session_state["respostas"].append("não")
+                        processar_resposta(pergunta_atual, "nao")
 
-                if st.button("❌ Não", key=f"nao_{progresso}"):
-                    st.session_state.setdefault("respostas", []).append("não")
-                    processar_resposta(pergunta_atual, "nao")
-
+            # Exibir destino final, se alcançado
             if st.session_state.get("saida"):
                 st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
         else:

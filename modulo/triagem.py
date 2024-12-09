@@ -24,13 +24,13 @@ def exibir_perguntas_respondidas(perguntas, respostas):
         st.write(f"Resposta: **{resposta}**")
 
 def processar_resposta(pergunta_atual, resposta):
-    """Processa a resposta da pergunta atual."""
+    """Atualiza o progresso ou determina a saída final."""
     destino = pergunta_atual[resposta]
     if "saida" in destino:
         st.session_state["saida"] = destino["saida"]
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
-    st.rerun()
+
 
 def obter_entradas(esteira):
     """Retorna as entradas de triagem com base na esteira."""
