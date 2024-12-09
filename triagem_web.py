@@ -60,6 +60,10 @@ with col1:
             # Exibe a validação da consulta
             st.success("✅ Dispositivo encontrado com sucesso!")
 
+            # Exibe a Esteira de Atendimento
+            esteira = result.get("esteira", "Não definida")
+            st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
+
             # Exibe dados do Device
             st.subheader("📱 Dados do Device")
             for detalhe in result.get("detalhes", []):
@@ -100,10 +104,6 @@ with col1:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
                 st.warning("⚠️ **Sem observações registradas para este cliente.**")
-
-            # Exibe a Esteira de Atendimento
-            esteira = result.get("esteira", "Não definida")
-            st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
 
         elif result["status"] == "warning":
             st.warning(f"⚠️ {result['message']}")
