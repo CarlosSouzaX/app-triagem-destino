@@ -101,13 +101,20 @@ with col1:
                 valor = detalhe["valor"]
 
                 # Exibe o campo com base no status
-                if campo == "sr" or campo == "status_sr" or campo == "supplier":
+                if campo == "sr" or campo == "supplier":
                     if status == "success":
                         st.success(f"✅ {campo.capitalize()}: **{valor}**")
                     elif status == "warning":
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
                         st.error(f"❌ {campo.capitalize()}: {valor}")
+                # Exibe o campo com base no status
+                if campo == "status_sr":
+                    componente = status_componentes.get(status)
+                    if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
+                        componente(f"✅ {campo.capitalize()}: **{valor}**")
+                    else:  # Caso o status não esteja no mapeamento, exibe um aviso genérico
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor} (Status não reconhecido)")
 
             # Mostrar a observação do cliente com destaque
             st.subheader("📌 Observação do Cliente")
