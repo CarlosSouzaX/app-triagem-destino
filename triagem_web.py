@@ -32,8 +32,8 @@ with col1:
         result = buscar_modelo_por_device(df, device_input)
 
          # Exibe o resultado completo na tela
-        st.write("🔍 Resultado da busca:")
-        st.write(result)
+        #st.write("🔍 Resultado da busca:")
+        #st.write(result)
 
         # Mapeamento de cores e ícones para o status_sr
         status_componentes = {
