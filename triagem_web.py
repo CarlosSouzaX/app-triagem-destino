@@ -79,9 +79,7 @@ def exibir_busca_por_device():
             elif result["status"] == "error":
                 st.error(f"❌ {result['message']}")
         else:
-            # Manter dados carregados anteriormente
-            if "detalhes_dispositivo" in st.session_state:
-                st.subheader("📱 Dados do Device (Persistente)")
+            if st.session_state["detalhes_dispositivo"]:
                 for detalhe in st.session_state["detalhes_dispositivo"]:
                     campo = detalhe["campo"]
                     status = detalhe["status"]
@@ -92,6 +90,8 @@ def exibir_busca_por_device():
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
                         st.error(f"❌ {campo.capitalize()}: {valor}")
+            else:
+                st.warning("⚠️ Nenhum detalhe disponível para o dispositivo.")
 
 
 # Função para exibir a triagem de produtos
