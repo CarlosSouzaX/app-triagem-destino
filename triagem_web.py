@@ -101,6 +101,15 @@ with col1:
                 valor = detalhe["valor"]
 
                 # Exibe o campo com base no status
+                if campo == "sr":
+                    if status == "success":
+                        st.success(f"✅ ** Núm da SR: {valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
+                        
+                # Exibe o campo com base no status
                 if campo == "sr" or campo == "supplier":
                     if status == "success":
                         st.success(f"✅ {campo.capitalize()}: **{valor}**")
@@ -108,6 +117,7 @@ with col1:
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
                         st.error(f"❌ {campo.capitalize()}: {valor}")
+
                 # Exibe o campo com base no status
                 if campo == "status_sr":
                     componente = status_componentes.get(valor)
