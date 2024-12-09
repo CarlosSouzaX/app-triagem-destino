@@ -32,9 +32,9 @@ def processar_resposta(pergunta_atual, resposta):
         st.session_state["progresso"] = destino["proxima"]
     st.rerun()
 
-def obter_entradas():
-    """Define as entradas disponíveis para triagem."""
-    return {
+def obter_entradas(esteira):
+    """Retorna as entradas de triagem com base na esteira."""
+    entradas_por_esteira = {
         "RUNOFF": [
             {"texto": "O produto é da marca Xiaomi, Apple ou Motorola?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
             {"texto": "O Mi/FMiP está bloqueado?", "sim": {"saida": "Rejeitar SR"}, "nao": {"proxima": 2}},
@@ -46,3 +46,6 @@ def obter_entradas():
             {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}},
         ],
     }
+
+    # Retorna as perguntas da esteira ou uma lista vazia caso não encontrada
+    return entradas_por_esteira.get(esteira, [])
