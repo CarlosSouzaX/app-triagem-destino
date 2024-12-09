@@ -103,7 +103,7 @@ with col1:
                 # Exibe o campo com base no status
                 if campo == "sr":
                     if status == "success":
-                        st.success(f"✅ ** Núm da SR: {valor}**")
+                        st.success(f"✅ **SR:** **{valor}**")
                     elif status == "warning":
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
