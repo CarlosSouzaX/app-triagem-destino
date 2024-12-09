@@ -9,6 +9,7 @@ from modulo.triagem import (
     obter_entradas,
 )
 
+
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Sistema de Triagem", page_icon="📋")
 
@@ -37,6 +38,10 @@ def exibir_busca_por_device():
         device_input = st.text_input("Digite o número do Device:")
 
         if st.button("Buscar", key="buscar_device"):
+            # Resetar estado de perguntas ao buscar novamente
+            reset_estado()
+
+            # Processar busca pelo modelo do device
             result = buscar_modelo_por_device(df, device_input)
 
             if not result or not isinstance(result, dict):
@@ -87,7 +92,6 @@ def exibir_triagem():
             st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca no campo acima.")
             return
 
-        st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
         perguntas = obter_entradas(esteira)
 
         if not perguntas:
@@ -95,6 +99,12 @@ def exibir_triagem():
             return
 
         progresso = st.session_state["progresso"]
+
+        # Botão "Voltar" para ajustar respostas
+        if progresso > 0:
+            if st.button("⬅️ Voltar"):
+                st.session_state["progresso"] -= 1
+                st.session_state["respostas"].pop()
 
         # Exibe perguntas já respondidas
         if progresso > 0:
