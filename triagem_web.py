@@ -110,18 +110,18 @@ with col1:
 
                 if campo == "supplier":
                     if status == "success":
-                        st.success(f"✅ **Supplier do Device:** **{valor}**")
+                        st.success(f"✅ **Supplier Device:** **{valor}**")
                     elif status == "warning":
-                        st.warning(f"⚠️ **Supplier do Device:** **{valor}**")
+                        st.warning(f"⚠️ **Supplier Device:** **{valor}**")
                     elif status == "error":
-                        st.error(f"❌ **Supplier do Device:** **{valor}**")
+                        st.error(f"❌ **Supplier Device:** **{valor}**")
 
                 if campo == "status_sr":
                     componente = status_componentes.get(valor)
                     if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
-                        componente(f"✅ {campo.capitalize()}: **{valor}**")
+                        componente(f"✅ **Status SR:** **{valor}**")
                     else:  # Caso o status não esteja no mapeamento, exibe um aviso genérico
-                        st.warning(f"⚠️ {campo.capitalize()}: {valor} (Status não reconhecido)")
+                        st.warning(f"⚠️ **Status SR:** {valor} (Status não reconhecido)")
 
             # Mostrar a observação do cliente com destaque
             st.subheader("📌 Observação do Cliente")
