@@ -1,13 +1,12 @@
-# modulo/triagem.py
-
 import streamlit as st
 
 def inicializar_estado():
     """Inicializa o estado da triagem."""
-    if "entrada_selecionada" not in st.session_state:
-        st.session_state["entrada_selecionada"] = None
+    if "progresso" not in st.session_state:
         st.session_state["progresso"] = 0
+    if "respostas" not in st.session_state:
         st.session_state["respostas"] = []
+    if "saida" not in st.session_state:
         st.session_state["saida"] = None
 
 def reset_estado():
@@ -31,7 +30,6 @@ def processar_resposta(pergunta_atual, resposta):
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
 
-
 def obter_entradas(esteira):
     """Retorna as entradas de triagem com base na esteira."""
     entradas_por_esteira = {
@@ -46,6 +44,4 @@ def obter_entradas(esteira):
             {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}},
         ],
     }
-
-    # Retorna as perguntas da esteira ou uma lista vazia caso não encontrada
     return entradas_por_esteira.get(esteira, [])
