@@ -132,7 +132,7 @@ with col2:
 # Terceira coluna: Triagem de Produtos
 
 # Inicializa o estado
-inicializar_estado()
+#inicializar_estado()
 
 with col3:
     st.header("⚙️ Triagem de Produtos")
