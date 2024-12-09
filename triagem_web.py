@@ -70,6 +70,9 @@ with col1:
             esteira = result.get("esteira", "Não definida")
             st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
 
+            # Armazenar a esteira no estado para uso posterior
+            st.session_state["esteira"] = esteira
+
             # Exibe dados do Device
             st.subheader("📱 Dados do Device")
             for detalhe in result.get("detalhes", []):
@@ -134,34 +137,37 @@ inicializar_estado()
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    entradas = obter_entradas()
+    # Certifique-se de que a esteira está definida no estado
+    if "esteira" in st.session_state:
+        esteira = st.session_state["esteira"]
+        st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
 
-    entrada_atual = st.selectbox(
-        "Selecione a Análise",
-        options=["Selecione uma entrada"] + list(entradas.keys()),
-        on_change=reset_estado
-    )
+        # Obter perguntas com base na esteira
+        perguntas = obter_entradas(esteira)
 
-    if entrada_atual in entradas:
-        perguntas = entradas[entrada_atual]
-        progresso = st.session_state["progresso"]
+        if perguntas:
+            progresso = st.session_state.get("progresso", 0)
 
-        if progresso > 0:
-            exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
+            if progresso > 0:
+                exibir_perguntas_respondidas(perguntas, st.session_state.get("respostas", []))
 
-        if progresso < len(perguntas) and not st.session_state["saida"]:
-            pergunta_atual = perguntas[progresso]
-            st.subheader(f"❓ Pergunta {progresso + 1}")
-            st.markdown(f"**{pergunta_atual['texto']}**")
-            col_sim, col_nao = st.columns(2)
-            with col_sim:
-                if st.button("✅ Sim", key=f"sim_{progresso}"):
-                    st.session_state["respostas"].append("sim")
-                    processar_resposta(pergunta_atual, "sim")
-            with col_nao:
-                if st.button("❌ Não", key=f"nao_{progresso}"):
-                    st.session_state["respostas"].append("não")
-                    processar_resposta(pergunta_atual, "nao")
+            if progresso < len(perguntas) and not st.session_state.get("saida"):
+                pergunta_atual = perguntas[progresso]
+                st.subheader(f"❓ Pergunta {progresso + 1}")
+                st.markdown(f"**{pergunta_atual['texto']}**")
+                col_sim, col_nao = st.columns(2)
+                with col_sim:
+                    if st.button("✅ Sim", key=f"sim_{progresso}"):
+                        st.session_state.setdefault("respostas", []).append("sim")
+                        processar_resposta(pergunta_atual, "sim")
+                with col_nao:
+                    if st.button("❌ Não", key=f"nao_{progresso}"):
+                        st.session_state.setdefault("respostas", []).append("não")
+                        processar_resposta(pergunta_atual, "nao")
 
-        if st.session_state["saida"]:
-            st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
+            if st.session_state.get("saida"):
+                st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
+        else:
+            st.warning("⚠️ Nenhuma entrada definida para esta esteira.")
+    else:
+        st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca no campo acima.")
