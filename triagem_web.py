@@ -3,7 +3,13 @@ import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
 from modulo.data_processor import buscar_modelo_por_device
-
+from modulo.triagem import (
+    inicializar_estado,
+    reset_estado,
+    exibir_perguntas_respondidas,
+    processar_resposta,
+    obter_entradas,
+)
 
 
 # Configurar o layout para "wide"
@@ -121,49 +127,15 @@ with col2:
     )
 
 # Terceira coluna: Triagem de Produtos
+
+# Inicializa o estado
+inicializar_estado()
+
 with col3:
     st.header("⚙️ Triagem de Produtos")
-    entradas = {
-        "Análise Meli": [
-            {"texto": "O produto é da marca Xiaomi, Apple ou Motorola?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
-            {"texto": "O Mi/FMiP está bloqueado?", "sim": {"saida": "Rejeitar SR"}, "nao": {"proxima": 2}},
-            {"texto": "Há danos estéticos?", "sim": {"saida": "Saída 2"}, "nao": {"saida": "Saída 3"}},
-        ],
-        "Análise Gazin": [
-            {"texto": "O produto está na garantia?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
-            {"texto": "O produto está funcional?", "sim": {"saida": "Saída 4"}, "nao": {"proxima": 2}},
-            {"texto": "Há defeitos graves?", "sim": {"saida": "Saída 5"}, "nao": {"saida": "Saída 6"}},
-        ],
-    }
 
-    # Inicialização do estado
-    if "entrada_selecionada" not in st.session_state:
-        st.session_state["entrada_selecionada"] = None
-        st.session_state["progresso"] = 0
-        st.session_state["respostas"] = []
-        st.session_state["saida"] = None
+    entradas = obter_entradas()
 
-    # Funções auxiliares
-    def reset_estado():
-        st.session_state["progresso"] = 0
-        st.session_state["respostas"] = []
-        st.session_state["saida"] = None
-
-    def exibir_perguntas_respondidas(perguntas, respostas):
-        st.subheader("📝 Perguntas Respondidas")
-        for i, resposta in enumerate(respostas):
-            st.markdown(f"**{i + 1}. {perguntas[i]['texto']}**")
-            st.write(f"Resposta: **{resposta}**")
-
-    def processar_resposta(pergunta_atual, resposta):
-        destino = pergunta_atual[resposta]
-        if "saida" in destino:
-            st.session_state["saida"] = destino["saida"]
-        elif "proxima" in destino:
-            st.session_state["progresso"] = destino["proxima"]
-        st.rerun()
-
-    # Interface de Seleção
     entrada_atual = st.selectbox(
         "Selecione a Análise",
         options=["Selecione uma entrada"] + list(entradas.keys()),
