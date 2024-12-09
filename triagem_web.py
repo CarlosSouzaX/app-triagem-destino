@@ -9,7 +9,6 @@ from modulo.triagem import (
     obter_entradas,
 )
 
-
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Sistema de Triagem", page_icon="📋")
 
@@ -53,11 +52,11 @@ def exibir_busca_por_device():
                 st.success("✅ Dispositivo encontrado com sucesso!")
                 esteira = result.get("esteira", "Não definida")
                 st.session_state["esteira"] = esteira
-                st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
+                st.session_state["detalhes_dispositivo"] = result.get("detalhes", [])
 
                 # Exibe detalhes
                 st.subheader("📱 Dados do Device")
-                for detalhe in result.get("detalhes", []):
+                for detalhe in st.session_state["detalhes_dispositivo"]:
                     campo = detalhe["campo"]
                     status = detalhe["status"]
                     valor = detalhe["valor"]
@@ -79,6 +78,20 @@ def exibir_busca_por_device():
                 st.warning(f"⚠️ {result['message']}")
             elif result["status"] == "error":
                 st.error(f"❌ {result['message']}")
+        else:
+            # Manter dados carregados anteriormente
+            if "detalhes_dispositivo" in st.session_state:
+                st.subheader("📱 Dados do Device (Persistente)")
+                for detalhe in st.session_state["detalhes_dispositivo"]:
+                    campo = detalhe["campo"]
+                    status = detalhe["status"]
+                    valor = detalhe["valor"]
+                    if status == "success":
+                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
 
 
 # Função para exibir a triagem de produtos
@@ -92,6 +105,7 @@ def exibir_triagem():
             st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca no campo acima.")
             return
 
+        st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
         perguntas = obter_entradas(esteira)
 
         if not perguntas:
