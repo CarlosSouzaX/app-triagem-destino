@@ -132,12 +132,16 @@ with col2:
         unsafe_allow_html=True,
     )
 
-# Terceira coluna: Triagem de Produtos
+# Função auxiliar para obter a esteira do estado
+def obter_esteira_estado():
+    """Retorna a esteira armazenada no estado, se disponível."""
+    return st.session_state.get("esteira")
+
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    # Certifique-se de que a esteira está definida no estado
+    # Obter esteira do estado
     esteira = obter_esteira_estado()
     if esteira:
         st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
@@ -146,25 +150,25 @@ with col3:
         perguntas = obter_entradas(esteira)
 
         if perguntas:
-            progresso = st.session_state["progresso"]
+            progresso = st.session_state.get("progresso", 0)
 
             if progresso > 0:
-                exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
+                exibir_perguntas_respondidas(perguntas, st.session_state.get("respostas", []))
 
-            if progresso < len(perguntas) and not st.session_state["saida"]:
+            if progresso < len(perguntas) and not st.session_state.get("saida"):
                 pergunta_atual = perguntas[progresso]
                 st.subheader(f"❓ Pergunta {progresso + 1}")
                 st.markdown(f"**{pergunta_atual['texto']}**")
 
                 if st.button("✅ Sim", key=f"sim_{progresso}"):
-                    st.session_state["respostas"].append("sim")
+                    st.session_state.setdefault("respostas", []).append("sim")
                     processar_resposta(pergunta_atual, "sim")
 
                 if st.button("❌ Não", key=f"nao_{progresso}"):
-                    st.session_state["respostas"].append("não")
+                    st.session_state.setdefault("respostas", []).append("não")
                     processar_resposta(pergunta_atual, "nao")
 
-            if st.session_state["saida"]:
+            if st.session_state.get("saida"):
                 st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
         else:
             st.warning("⚠️ Nenhuma entrada definida para esta esteira.")

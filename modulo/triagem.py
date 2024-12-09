@@ -35,7 +35,7 @@ def processar_resposta(pergunta_atual, resposta):
 def obter_entradas():
     """Define as entradas disponíveis para triagem."""
     return {
-        "Análise Meli": [
+        "RUNOFF": [
             {"texto": "O produto é da marca Xiaomi, Apple ou Motorola?", "sim": {"proxima": 1}, "nao": {"proxima": 2}},
             {"texto": "O Mi/FMiP está bloqueado?", "sim": {"saida": "Rejeitar SR"}, "nao": {"proxima": 2}},
             {"texto": "Há danos estéticos?", "sim": {"saida": "Saída 2"}, "nao": {"saida": "Saída 3"}},
