@@ -87,6 +87,7 @@ def exibir_triagem():
             st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca no campo acima.")
             return
 
+        st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
         perguntas = obter_entradas(esteira)
 
         if not perguntas:
@@ -94,11 +95,6 @@ def exibir_triagem():
             return
 
         progresso = st.session_state["progresso"]
-
-        # Exibir perguntas apenas após progresso válido
-        if progresso == 0 and not st.session_state["respostas"]:
-            st.info("🔍 Realize uma interação para iniciar a triagem.")
-            return
 
         # Exibe perguntas já respondidas
         if progresso > 0:
@@ -123,7 +119,6 @@ def exibir_triagem():
         # Exibe a saída final
         if st.session_state.get("saida"):
             st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
-
 
 
 # Exibir as funcionalidades
