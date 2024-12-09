@@ -154,6 +154,11 @@ with col3:
             if progresso > 0:
                 exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
 
+            st.write(f"DEBUG: Progresso: {st.session_state['progresso']}")
+            st.write(f"DEBUG: Respostas: {st.session_state['respostas']}")
+            st.write(f"DEBUG: Saída: {st.session_state.get('saida')}")
+
+
             # Exibir a pergunta atual
             if progresso < len(perguntas) and not st.session_state.get("saida"):
                 pergunta_atual = perguntas[progresso]
