@@ -110,7 +110,7 @@ with col1:
                         st.error(f"❌ {campo.capitalize()}: {valor}")
                 # Exibe o campo com base no status
                 if campo == "status_sr":
-                    componente = status_componentes.get(status)
+                    componente = status_componentes.get(valor)
                     if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
                         componente(f"✅ {campo.capitalize()}: **{valor}**")
                     else:  # Caso o status não esteja no mapeamento, exibe um aviso genérico
