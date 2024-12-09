@@ -10,6 +10,8 @@ def inicializar_estado():
         st.session_state["saida"] = None
     if "esteira" not in st.session_state:
         st.session_state["esteira"] = None
+    if "detalhes_dispositivo" not in st.session_state:
+        st.session_state["detalhes_dispositivo"] = None  # Para armazenar dados do dispositivo
 
 
 def reset_estado():
@@ -17,6 +19,9 @@ def reset_estado():
     st.session_state["progresso"] = 0
     st.session_state["respostas"] = []
     st.session_state["saida"] = None
+    st.session_state["esteira"] = None
+    st.session_state["detalhes_dispositivo"] = None  # Resetar detalhes ao buscar novamente
+
 
 def exibir_perguntas_respondidas(perguntas, respostas):
     """Exibe as perguntas já respondidas."""
@@ -25,6 +30,7 @@ def exibir_perguntas_respondidas(perguntas, respostas):
         st.markdown(f"**{i + 1}. {perguntas[i]['texto']}**")
         st.write(f"Resposta: **{resposta}**")
 
+
 def processar_resposta(pergunta_atual, resposta):
     """Atualiza o progresso ou determina a saída final."""
     destino = pergunta_atual[resposta]
@@ -32,6 +38,7 @@ def processar_resposta(pergunta_atual, resposta):
         st.session_state["saida"] = destino["saida"]
     elif "proxima" in destino:
         st.session_state["progresso"] = destino["proxima"]
+
 
 def obter_entradas(esteira):
     """Retorna as entradas de triagem com base na esteira."""
