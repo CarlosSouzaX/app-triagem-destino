@@ -8,6 +8,9 @@ def inicializar_estado():
         st.session_state["respostas"] = []
     if "saida" not in st.session_state:
         st.session_state["saida"] = None
+    if "esteira" not in st.session_state:
+        st.session_state["esteira"] = None
+
 
 def reset_estado():
     """Reseta o estado da triagem."""
