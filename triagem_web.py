@@ -15,6 +15,9 @@ from modulo.triagem import (
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
 
+# Inicializa o estado
+inicializar_estado()
+
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
@@ -130,42 +133,38 @@ with col2:
     )
 
 # Terceira coluna: Triagem de Produtos
-
-# Inicializa o estado
-#inicializar_estado()
-
+# Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
     # Certifique-se de que a esteira está definida no estado
-    if "esteira" in st.session_state:
-        esteira = st.session_state["esteira"]
+    esteira = obter_esteira_estado()
+    if esteira:
         st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
 
         # Obter perguntas com base na esteira
         perguntas = obter_entradas(esteira)
 
         if perguntas:
-            progresso = st.session_state.get("progresso", 0)
+            progresso = st.session_state["progresso"]
 
             if progresso > 0:
-                exibir_perguntas_respondidas(perguntas, st.session_state.get("respostas", []))
+                exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
 
-            if progresso < len(perguntas) and not st.session_state.get("saida"):
+            if progresso < len(perguntas) and not st.session_state["saida"]:
                 pergunta_atual = perguntas[progresso]
                 st.subheader(f"❓ Pergunta {progresso + 1}")
                 st.markdown(f"**{pergunta_atual['texto']}**")
-                col_sim, col_nao = st.columns(2)
-                with col_sim:
-                    if st.button("✅ Sim", key=f"sim_{progresso}"):
-                        st.session_state.setdefault("respostas", []).append("sim")
-                        processar_resposta(pergunta_atual, "sim")
-                with col_nao:
-                    if st.button("❌ Não", key=f"nao_{progresso}"):
-                        st.session_state.setdefault("respostas", []).append("não")
-                        processar_resposta(pergunta_atual, "nao")
 
-            if st.session_state.get("saida"):
+                if st.button("✅ Sim", key=f"sim_{progresso}"):
+                    st.session_state["respostas"].append("sim")
+                    processar_resposta(pergunta_atual, "sim")
+
+                if st.button("❌ Não", key=f"nao_{progresso}"):
+                    st.session_state["respostas"].append("não")
+                    processar_resposta(pergunta_atual, "nao")
+
+            if st.session_state["saida"]:
                 st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
         else:
             st.warning("⚠️ Nenhuma entrada definida para esta esteira.")
