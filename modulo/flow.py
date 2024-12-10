@@ -55,7 +55,7 @@ def runoff_flow(status_sr, device_brand):
             # Validação do status SR e da marca em Q3
             "Q3": {
                 "question": "O dispositivo está na Blacklist?",
-                "options": ["Sim - arrived", "Sim - tracked", "Não"],
+                "options": ["Sim, Não"],
                 "next": {
                     "Sim": "END_DevolverPicking" if status_sr in ["open", "arrived"] else "END_TriagemJuridico",
                     "Não": "Q4_FMiP" if device_brand in ["Apple", "Xiaomi"] else "Q4.2"
