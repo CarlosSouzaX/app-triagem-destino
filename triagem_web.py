@@ -155,28 +155,8 @@ with col1:
         elif result["status"] == "error":
             st.error(f"❌ {result['message']}")
 
-    # Exibe os dados sempre que `detalhes_dispositivo` estiver presente no estado
-    if "detalhes_dispositivo" in st.session_state:
-        st.subheader("📱 Dados do Device")
-        for detalhe in st.session_state["detalhes_dispositivo"]:
-            campo = detalhe["campo"]
-            status = detalhe["status"]
-            valor = detalhe["valor"]
 
-            if status == "success":
-                st.success(f"✅ {campo.capitalize()}: **{valor}**")
-            elif status == "warning":
-                st.warning(f"⚠️ {campo.capitalize()}: {valor}")
-            elif status == "error":
-                st.error(f"❌ {campo.capitalize()}: {valor}")
 
-        # Mostrar a observação do cliente com destaque
-        st.subheader("📌 Observação do Cliente")
-        obs_cliente = st.session_state.get("obs_cliente", None)
-        if obs_cliente:
-            st.info(f"🔍 **Observação:** {obs_cliente}")
-        else:
-            st.warning("⚠️ **Sem observações registradas para este cliente.**")   
 
 # Divisor vertical na segunda coluna
 with col2:
