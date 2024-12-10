@@ -170,27 +170,35 @@ with col2:
 # Função auxiliar para obter a esteira do estado
 def obter_esteira_estado():
     """Retorna a esteira armazenada no estado, se disponível."""
-    return st.session_state.get("esteira")
+    return st.session_state.get("esteira", None)  # Retorna None se não existir
 
 def carregar_status():
     """Retorna o status da SR armazenado no estado, se disponível."""
-    return st.session_state.get("status_sr")
+    return st.session_state.get("status_sr", None)
 
 def carregar_device_brand():
     """Retorna a marca do dispositivo armazenada no estado, se disponível."""
-    return st.session_state.get("device_brand")
+    return st.session_state.get("device_brand", None)
 
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    # Obter o estado atual do fluxo
+    # Obter valores do estado
     flow = obter_esteira_estado()
     status_sr = carregar_status()
     device_brand = carregar_device_brand()
 
+    # Exibir informações para depuração
+    st.write("**Debug:**")
+    st.write(f"Flow: {flow}")
+    st.write(f"Status SR: {status_sr}")
+    st.write(f"Device Brand: {device_brand}")
+
     # Executar o fluxo com os dados fornecidos
-    if flow == "RUNOFF":
+    if flow == "RUNOFF" and status_sr is not None:
         runoff_flow(status_sr, device_brand)
-    else:
+    elif flow is None:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
+    else:
+        st.warning("⚠️ Status SR ou marca do dispositivo não encontrados. Verifique os dados.")
