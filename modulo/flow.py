@@ -2,18 +2,16 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo Funcional com avanço imediato após clique no botão "Próximo".
+    Fluxo Funcional com avanço imediato no botão "Próximo".
     """
 
     st.title("Fluxo de Triagem - Funcional")
 
-    # Inicializa o estado da pergunta atual, respostas e flag de avanço
+    # Inicializa o estado da pergunta atual e respostas, se não existir
     if "current_question" not in st.session_state:
         st.session_state.current_question = "Q1"
     if "responses" not in st.session_state:
         st.session_state.responses = {}
-    if "advance_flag" not in st.session_state:
-        st.session_state.advance_flag = False
 
     # Estrutura estática do fluxo
     questions = {
@@ -93,32 +91,6 @@ def runoff_flow():
         }
     }
 
-    # Estados finais
-    final_states = {
-        "END_DevolverRecebimento": "Devolver para o Recebimento.",
-        "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
-        "END_DevolverPicking": "Devolver ao Picking e rejeitar SR.",
-        "END_TriagemJuridico": "Manter em triagem e acionar jurídico.",
-        "END_Bloqueio": "Bloqueio IMEI (Blacklist) / Bloqueio FMiP (Xiaomi e Apple)."
-    }
-
-    # Verifica se a flag de avanço está ativada
-    if st.session_state.advance_flag:
-        current_question = st.session_state.current_question
-        response = st.session_state.responses.get(current_question)
-
-        # Avança para o próximo estado
-        next_step = questions[current_question]["next"].get(response)
-        if next_step in final_states:
-            st.success(f"Estado Final: {final_states[next_step]}")
-            st.session_state.current_question = "Q1"
-            st.session_state.responses = {}
-        else:
-            st.session_state.current_question = next_step
-
-        # Reseta a flag de avanço
-        st.session_state.advance_flag = False
-
     # Obter pergunta atual
     current_question = st.session_state.current_question
     question_data = questions.get(current_question)
@@ -135,8 +107,8 @@ def runoff_flow():
         st.write(f"**{question_data['question']}**")
         response = st.radio(
             "Escolha uma opção:",
-            options=options,  # Adiciona opção inicial visível
-            index=0,  # Nenhuma seleção inicial
+            options=options,
+            index=0,
             key=f"q{current_question}"
         )
 
@@ -148,11 +120,16 @@ def runoff_flow():
         is_next_enabled = response != "Selecione uma opção"
 
         if st.button("Próximo", disabled=not is_next_enabled):
-            # Ativar a flag de avanço
-            st.session_state.advance_flag = True
+            # Avançar imediatamente para a próxima pergunta ou estado final
+            next_step = question_data["next"].get(response)
+            if next_step in final_states:
+                st.success(f"Estado Final: {final_states[next_step]}")
+                st.session_state.current_question = "Q1"
+                st.session_state.responses = {}
+            else:
+                st.session_state.current_question = next_step
     else:
         st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
         if st.button("Reiniciar"):
             st.session_state.current_question = "Q1"
             st.session_state.responses = {}
-            st.session_state.advance_flag = False
