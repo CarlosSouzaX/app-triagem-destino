@@ -88,7 +88,7 @@ with col1:
                 if campo == "marca":
                     if status == "success":
                         st.success(f"✅ {campo.capitalize()}: **{valor}**")
-                        st.session_state["status_sr"] = valor
+                        st.session_state["marca"] = valor
                     elif status == "warning":
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
