@@ -2,16 +2,19 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo estático para RUNOFF, agora com navegabilidade por etapas.
+    Fluxo estático para RUNOFF com melhoria:
+    O botão "Próximo" é habilitado somente após selecionar uma resposta.
     """
 
     st.title("Fluxo de Formulário - RUNOFF")
 
-    # Inicializa o estado da pergunta atual
+    # Inicializa o estado da pergunta atual e respostas
     if "current_question" not in st.session_state:
         st.session_state.current_question = 1
+    if "responses" not in st.session_state:
+        st.session_state.responses = {}
 
-    # Perguntas estáticas
+    # Estrutura estática do fluxo
     questions = {
         1: {
             "question": "O contrato expirou?",
@@ -61,13 +64,28 @@ def runoff_flow():
 
     if question_data:
         # Exibe a pergunta atual
-        response = st.radio(question_data["question"], question_data["options"], key=f"q{current_question}")
-        if st.button("Próximo", key=f"next{current_question}"):
-            next_step = question_data["next"].get(response)
+        st.write(f"**Pergunta {current_question}:**")
+        response = st.radio(
+            question_data["question"],
+            question_data["options"],
+            index=-1,  # Nenhuma resposta selecionada inicialmente
+            key=f"q{current_question}"
+        )
+
+        # Habilita o botão "Próximo" apenas se houver uma resposta selecionada
+        is_next_enabled = response in question_data["options"]
+
+        if st.button("Próximo", key=f"next{current_question}", disabled=not is_next_enabled):
+            # Salva a resposta atual
+            st.session_state.responses[current_question] = response
+            # Avança para a próxima pergunta ou final
+            next_step = question_data["next"][response]
             if isinstance(next_step, int):
                 st.session_state.current_question = next_step
             else:
                 st.success(f"Saída Final: {next_step}")
-                st.session_state.current_question = 1  # Reinicia o fluxo
+                # Reseta o fluxo após conclusão
+                st.session_state.current_question = 1
+                st.session_state.responses = {}
     else:
         st.error("Erro no fluxo. Contate o administrador.")
