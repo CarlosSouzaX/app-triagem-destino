@@ -10,6 +10,7 @@ from modulo.triagem import (
     processar_resposta,
     obter_entradas,
 )
+
 from modulo.flow import runoff_flow
 
 # Configurar o layout para "wide"
@@ -84,13 +85,29 @@ with col1:
                 valor = detalhe["valor"]
 
                  # Exibe o campo com base no status
-                if campo == "marca" or campo == "modelo" or campo == "imei":
+                if campo == "marca":
+                    if status == "success":
+                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                        st.session_state["status_sr"] = valor
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
+                if campo == "modelo":
                     if status == "success":
                         st.success(f"✅ {campo.capitalize()}: **{valor}**")
                     elif status == "warning":
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
                         st.error(f"❌ {campo.capitalize()}: {valor}")
+                if campo == "imei":
+                    if status == "success":
+                        st.success(f"✅ {campo.capitalize()}: **{valor}**")
+                    elif status == "warning":
+                        st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+                    elif status == "error":
+                        st.error(f"❌ {campo.capitalize()}: {valor}")
+
         
             
             # # Exibe dados da SR
@@ -118,6 +135,8 @@ with col1:
 
                 if campo == "status_sr":
                     componente = status_componentes.get(valor)
+                    # Armazenar a o status da SR no estado para uso posterior
+                    st.session_state["status_sr"] = valor
                     if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
                         componente(f"✅ **Status SR:** **{valor}**")
                     else:  # Caso o status não esteja no mapeamento, exibe um aviso genérico
@@ -130,6 +149,8 @@ with col1:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
                 st.warning("⚠️ **Sem observações registradas para este cliente.**")
+
+            
 
         elif result["status"] == "warning":
             st.warning(f"⚠️ {result['message']}")
@@ -150,15 +171,26 @@ with col2:
 def obter_esteira_estado():
     """Retorna a esteira armazenada no estado, se disponível."""
     return st.session_state.get("esteira")
-    
+
+def carregar_status():
+    """Retorna o status da SR armazenado no estado, se disponível."""
+    return st.session_state.get("status_sr")
+
+def carregar_device_brand():
+    """Retorna a marca do dispositivo armazenada no estado, se disponível."""
+    return st.session_state.get("device_brand")
+
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    
+    # Obter o estado atual do fluxo
     flow = obter_esteira_estado()
-    if flow == "RUNOFF":
-        runoff_flow()
+    status_sr = carregar_status()
+    device_brand = carregar_device_brand()
 
+    # Executar o fluxo com os dados fornecidos
+    if flow == "RUNOFF":
+        runoff_flow(status_sr, device_brand)
     else:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")

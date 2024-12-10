@@ -21,9 +21,9 @@ def advance_to_next_question():
         st.session_state.current_question = next_step
 
 
-def runoff_flow():
+def runoff_flow(status_sr, device_brand):
     """
-    Fluxo Funcional com avanço imediato no botão "Próximo".
+    Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
 
     st.title("Fluxo de Triagem - Funcional")
@@ -36,87 +36,91 @@ def runoff_flow():
     if "questions" not in st.session_state:
         st.session_state.questions = {
             "Q1": {
-            "question": "O IMEI está correto?",
-            "options": ["Sim", "Não", "Não Sei"],
-            "next": {
-                "Sim": "Q2",
-                "Não": "END_DevolverRecebimento",
-                "Não Sei": "END_AT"
-            }
-        },
+                "question": "O IMEI está correto?",
+                "options": ["Sim", "Não", "Não Sei"],
+                "next": {
+                    "Sim": "Q2",
+                    "Não": "END_DevolverRecebimento",
+                    "Não Sei": "END_AT"
+                }
+            },
             "Q2": {
-            "question": "O Modelo está correto?",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "Q3",
-                "Não": "END_DevolverRecebimento"
-            }
-        },
+                "question": "O Modelo está correto?",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "Q3",
+                    "Não": "END_DevolverRecebimento"
+                }
+            },
+            # Validação do status SR e da marca em Q3
             "Q3": {
-            "question": "O dispositivo está na Blacklist?",
-            "options": ["Sim - arrived", "Sim - tracked", "Não"],
-            "next": {
-                "Sim - arrived": "END_DevolverPicking",
-                "Sim - tracked": "END_TriagemJuridico",
-                "Não": "Q4_FMiP"
-            }
-        },
+                "question": "O dispositivo está na Blacklist?",
+                "options": ["Sim - arrived", "Sim - tracked", "Não"],
+                "next": {
+                    "Sim": "END_DevolverPicking" if status_sr in ["open", "arrived"] else "END_TriagemJuridico",
+                    "Não": "Q4_FMiP" if device_brand in ["Apple", "Xiaomi"] else "Q4.2"
+                }
+            },
             "Q4_FMiP": {
-            "question": "O dispositivo está com FMiP ativo?",
-            "options": ["Sim - arrived", "Não"],
-            "next": {
-                "Sim - arrived": "END_DevolverPicking",
-                "Não": "END_Bloqueio"
-            }
-        },
+                "question": "O dispositivo está com FMiP ativo?",
+                "options": ["Sim - arrived", "Não"],
+                "next": {
+                    "Sim - arrived": "END_DevolverPicking",
+                    "Não": "END_Bloqueio"
+                }
+            },
             "Q4.2": {
-            "question": "Teve contato líquido?",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "END_Fabrica",
-                "Não": "Q4.3"
-            }
-        },
+                "question": "Teve contato líquido?",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "END_Fabrica",
+                    "Não": "Q4.3"
+                }
+            },
             "Q4.3": {
-            "question": "O sensor de umidade (gaveta do chip) está ativado?",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "END_Fabrica",
-                "Não": "Q4.4"
-            }
-        },
+                "question": "O sensor de umidade (gaveta do chip) está ativado?",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "END_Fabrica",
+                    "Não": "Q4.4"
+                }
+            },
             "Q4.4": {
-            "question": "Tem evidências de carbonização?",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "END_Fabrica",
-                "Não": "Q4.1"
-            }
-        },
+                "question": "Tem evidências de carbonização?",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "END_Fabrica",
+                    "Não": "Q4.1"
+                }
+            },
             "Q4.1": {
-            "question": "Teve dano por impacto?",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "END_Reparo",
-                "Não": "Q4.5"
-            }
-        },
+                "question": "Teve dano por impacto?",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "END_Reparo",
+                    "Não": "Q4.5"
+                }
+            },
             "Q4.5": {
-            "question": "O device está no período de garantia? (Moto, Samsung e Apple)",
-            "options": ["Sim", "Não"],
-            "next": {
-                "Sim": "END_Garantia",
-                "Não": "END_Reparo"
+                "question": "O device está no período de garantia? (Moto, Samsung e Apple)",
+                "options": ["Sim", "Não"],
+                "next": {
+                    "Sim": "END_Garantia",
+                    "Não": "END_Reparo"
+                }
             }
         }
-    }
 
     if "final_states" not in st.session_state:
         st.session_state.final_states = {
             "END_DevolverRecebimento": "Devolver para o Recebimento.",
             "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
             "END_DevolverPicking": "Devolver ao Picking e rejeitar SR.",
-            "END_TriagemJuridico": "Manter em triagem e acionar jurídico."
+            "END_TriagemJuridico": "Manter em triagem e acionar jurídico.",
+            "END_Bloqueio": "Bloquear IMEI e dispositivo (Blacklist).",
+            "END_Fabrica": "Encaminhar para análise na fábrica.",
+            "END_Reparo": "Encaminhar para reparo.",
+            "END_Garantia": "Encaminhar para garantia."
         }
 
     # Obter a pergunta atual
