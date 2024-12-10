@@ -1,4 +1,26 @@
 import streamlit as st
+import os
+import json
+
+
+def carregar_modelos_ativos_json():
+    """
+    Carrega a lista de modelos ativos para reparo de um arquivo JSON localizado na pasta 'data'.
+
+    Returns:
+        list: Lista de modelos ativos.
+    """
+    # Caminho absoluto para o arquivo JSON
+    base_dir = os.path.dirname(__file__)  # Diretório atual do data_processor.py
+    caminho_modelos_ativos = os.path.join(base_dir, "../data/modelos_ativos.json")
+
+    try:
+        with open(caminho_modelos_ativos, "r") as f:
+            data = json.load(f)
+        return data.get("modelos_ativos", [])  # Retorna a lista de modelos ativos
+    except Exception as e:
+        print(f"Erro ao carregar modelos ativos: {e}")
+        return []
 
 def advance_to_next_question():
     """
@@ -21,7 +43,7 @@ def advance_to_next_question():
         st.session_state.current_question = next_step
 
 
-def runoff_flow(status_sr, device_brand):
+def runoff_flow(status_sr, device_brand, model):
     """
     Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
@@ -52,7 +74,6 @@ def runoff_flow(status_sr, device_brand):
                     "Não": "END_DevolverRecebimento"
                 }
             },
-            # Validação do status SR e da marca em Q3
             "Q3": {
                 "question": "O dispositivo está na Blacklist?",
                 "options": ["Sim", "Não"],
@@ -63,10 +84,10 @@ def runoff_flow(status_sr, device_brand):
             },
             "Q4_FMiP": {
                 "question": "O dispositivo está com FMiP ativo?",
-                "options": ["Sim - arrived", "Não"],
+                "options": ["Sim", "Não"],
                 "next": {
-                    "Sim - arrived": "END_DevolverPicking",
-                    "Não": "END_Bloqueio"
+                    "Sim": "END_DevolverPicking" if status_sr in ['open', 'arrived'] else "END_TriagemJuridico",
+                    "Não": "Q4.2"
                 }
             },
             "Q4.2": {
@@ -97,7 +118,7 @@ def runoff_flow(status_sr, device_brand):
                 "question": "Teve dano por impacto?",
                 "options": ["Sim", "Não"],
                 "next": {
-                    "Sim": "END_Reparo",
+                    "Sim": "END_Reparo_Mesmo" if model in carregar_modelos_ativos_json() else "END_Reparo",
                     "Não": "Q4.5"
                 }
             },
@@ -119,7 +140,8 @@ def runoff_flow(status_sr, device_brand):
             "END_TriagemJuridico": "Manter em triagem e acionar jurídico.",
             "END_Bloqueio": "Bloquear IMEI e dispositivo (Blacklist).",
             "END_Fabrica": "Encaminhar para análise na fábrica.",
-            "END_Reparo": "Encaminhar para reparo.",
+            "END_Reparo": "Encaminhar para Reparo Like New.",
+            "END_Reparo_Mesmo": "Encaminhar para IN-HOUSE (Reparo do Mesmo).",
             "END_Garantia": "Encaminhar para garantia."
         }
 

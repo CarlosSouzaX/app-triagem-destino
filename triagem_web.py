@@ -95,6 +95,7 @@ with col1:
                         st.error(f"❌ {campo.capitalize()}: {valor}")
                 if campo == "modelo":
                     if status == "success":
+                        st.session_state["modelo"] = valor
                         st.success(f"✅ {campo.capitalize()}: **{valor}**")
                     elif status == "warning":
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
@@ -180,6 +181,10 @@ def carregar_device_brand():
     """Retorna a marca do dispositivo armazenada no estado, se disponível."""
     return st.session_state.get("marca", None)
 
+def carregar_device_model():
+    """Retorna o modelo do dispositivo armazenado no estado, se disponível."""
+    return st.session_state.get("modelo", None)
+
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
@@ -188,16 +193,11 @@ with col3:
     flow = obter_esteira_estado()
     status_sr = carregar_status()
     device_brand = carregar_device_brand()
-
-    # Exibir informações para depuração
-    st.write("**Debug:**")
-    st.write(f"Flow: {flow}")
-    st.write(f"Status SR: {status_sr}")
-    st.write(f"Device Brand: {device_brand}")
+    model = carregar_device_model()
 
     # Executar o fluxo com os dados fornecidos
     if flow == "RUNOFF" and status_sr is not None:
-        runoff_flow(status_sr, device_brand)
+        runoff_flow(status_sr, device_brand, model)
     elif flow is None:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
     else:
