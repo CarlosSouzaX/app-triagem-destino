@@ -194,6 +194,7 @@ with col3:
     status_sr = carregar_status()
     device_brand = carregar_device_brand()
     model = carregar_device_model()
+    st.write(f"Model: {model}")
 
     # Executar o fluxo com os dados fornecidos
     if flow == "RUNOFF" and status_sr is not None:
