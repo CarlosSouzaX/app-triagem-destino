@@ -2,12 +2,12 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo Funcional com avanço imediato no botão "Próximo".
+    Fluxo Funcional com avanço imediato no botão "Próximo" após selecionar uma opção.
     """
 
     st.title("Fluxo de Triagem - Funcional")
 
-    # Inicializa o estado da pergunta atual e respostas, se não existir
+    # Inicializa o estado da pergunta atual e respostas
     if "current_question" not in st.session_state:
         st.session_state.current_question = "Q1"
     if "responses" not in st.session_state:
@@ -91,7 +91,15 @@ def runoff_flow():
         }
     }
 
-    # Obter pergunta atual
+     # Estados finais
+    final_states = {
+        "END_DevolverRecebimento": "Devolver para o Recebimento.",
+        "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
+        "END_DevolverPicking": "Devolver ao Picking e rejeitar SR.",
+        "END_TriagemJuridico": "Manter em triagem e acionar jurídico."
+    }
+
+    # Obter a pergunta atual
     current_question = st.session_state.current_question
     question_data = questions.get(current_question)
 
@@ -103,7 +111,7 @@ def runoff_flow():
         # Adicionar uma opção inicial visível "Selecione uma opção"
         options = ["Selecione uma opção"] + question_data["options"]
 
-        # Exibir pergunta
+        # Exibir a pergunta
         st.write(f"**{question_data['question']}**")
         response = st.radio(
             "Escolha uma opção:",
@@ -112,18 +120,19 @@ def runoff_flow():
             key=f"q{current_question}"
         )
 
-        # Atualizar resposta no estado, ignorando a opção inicial
+        # Atualizar a resposta no estado, ignorando a opção inicial
         if response != "Selecione uma opção":
             st.session_state.responses[current_question] = response
 
-        # Habilitar botão "Próximo" apenas após uma resposta válida
+        # Habilitar o botão "Próximo" apenas após uma resposta válida
         is_next_enabled = response != "Selecione uma opção"
 
         if st.button("Próximo", disabled=not is_next_enabled):
-            # Avançar imediatamente para a próxima pergunta ou estado final
+            # Obter o próximo passo imediatamente
             next_step = question_data["next"].get(response)
             if next_step in final_states:
                 st.success(f"Estado Final: {final_states[next_step]}")
+                # Reiniciar o fluxo
                 st.session_state.current_question = "Q1"
                 st.session_state.responses = {}
             else:
