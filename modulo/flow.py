@@ -2,7 +2,7 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo estático para RUNOFF com avanço imediato após clique no botão 'Próximo'.
+    Fluxo estático para RUNOFF com verificações de segurança adicionais.
     """
 
     st.title("Fluxo de Formulário - RUNOFF")
@@ -85,8 +85,10 @@ def runoff_flow():
 
         if st.button("Próximo", disabled=not is_next_enabled):
             # Avança para a próxima pergunta ou final
-            next_step = question_data["next"][response]
-            if isinstance(next_step, int):
+            next_step = question_data["next"].get(response)
+            if next_step is None:
+                st.error("Erro: A próxima etapa não foi encontrada.")
+            elif isinstance(next_step, int):
                 st.session_state.current_question = next_step
             else:
                 st.success(f"Saída Final: {next_step}")
@@ -94,4 +96,5 @@ def runoff_flow():
                 st.session_state.current_question = 1
                 st.session_state.responses = {}
     else:
-        st.error("Erro no fluxo. Contate o administrador.")
+        st.warning("⚠️ Pergunta não encontrada ou fluxo chegou ao fim.")
+        st.button("Reiniciar", on_click=lambda: st.session_state.clear())
