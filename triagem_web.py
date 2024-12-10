@@ -178,7 +178,7 @@ def carregar_status():
 
 def carregar_device_brand():
     """Retorna a marca do dispositivo armazenada no estado, se disponível."""
-    return st.session_state.get("device_brand", None)
+    return st.session_state.get("marca", None)
 
 # Terceira coluna: Triagem de Produtos
 with col3:
