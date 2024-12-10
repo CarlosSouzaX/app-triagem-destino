@@ -2,99 +2,144 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo estático para RUNOFF com verificações de segurança adicionais.
+    Fluxo Funcional para Triagem com perguntas e transições personalizadas.
     """
 
-    st.title("Fluxo de Formulário - RUNOFF")
+    st.title("Fluxo de Triagem - Funcional")
 
     # Inicializa o estado da pergunta atual e respostas
     if "current_question" not in st.session_state:
-        st.session_state.current_question = 1
+        st.session_state.current_question = "Q1"
     if "responses" not in st.session_state:
         st.session_state.responses = {}
 
     # Estrutura estática do fluxo
     questions = {
-        1: {
-            "question": "O contrato expirou?",
-            "options": ["Sim", "Não"],
-            "next": {"Sim": 2, "Não": 3}
+        "Q1": {
+            "question": "O IMEI está correto?",
+            "options": ["Sim", "Não", "Não Sei"],
+            "next": {
+                "Sim": "Q2",
+                "Não": "END_DevolverRecebimento",
+                "Não Sei": "END_AT"
+            }
         },
-        2: {
-            "question": "Há saldo remanescente?",
+        "Q2": {
+            "question": "O Modelo está correto?",
             "options": ["Sim", "Não"],
-            "next": {"Sim": 4, "Não": 5}
+            "next": {
+                "Sim": "Q3",
+                "Não": "END_DevolverRecebimento"
+            }
         },
-        3: {
-            "question": "O cliente deseja renovar o contrato?",
-            "options": ["Sim", "Não"],
-            "next": {"Sim": 6, "Não": 7}
+        "Q3": {
+            "question": "O dispositivo está na Blacklist?",
+            "options": ["Sim - arrived", "Sim - tracked", "Não"],
+            "next": {
+                "Sim - arrived": "END_DevolverPicking",
+                "Sim - tracked": "END_TriagemJuridico",
+                "Não": "Q4_FMiP"
+            }
         },
-        4: {
-            "question": "O saldo será devolvido?",
-            "options": ["Sim", "Não"],
-            "next": {"Sim": 8, "Não": "END1"}
+        "Q4_FMiP": {
+            "question": "O dispositivo está com FMiP ativo?",
+            "options": ["Sim - arrived", "Não"],
+            "next": {
+                "Sim - arrived": "END_DevolverPicking",
+                "Não": "END_Bloqueio"
+            }
         },
-        5: {
-            "question": "Deve ser arquivado sem saldo?",
+        "Q4.2": {
+            "question": "Teve contato líquido?",
             "options": ["Sim", "Não"],
-            "next": {"Sim": "END2", "Não": "END3"}
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.3"
+            }
         },
-        6: {
-            "question": "Há uma oferta de renovação?",
+        "Q4.3": {
+            "question": "O sensor de umidade (gaveta do chip) está ativado?",
             "options": ["Sim", "Não"],
-            "next": {"Sim": "END4", "Não": "END5"}
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.4"
+            }
         },
-        7: {
-            "question": "Deseja oferecer um plano alternativo?",
+        "Q4.4": {
+            "question": "Tem evidências de carbonização?",
             "options": ["Sim", "Não"],
-            "next": {"Sim": "END6", "Não": "END7"}
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.1"
+            }
         },
-        8: {
-            "question": "O saldo foi processado?",
+        "Q4.1": {
+            "question": "Teve dano por impacto?",
             "options": ["Sim", "Não"],
-            "next": {"Sim": "END8", "Não": "END9"}
+            "next": {
+                "Sim": "END_Reparo",
+                "Não": "Q4.5"
+            }
+        },
+        "Q4.5": {
+            "question": "O device está no período de garantia? (Moto, Samsung e Apple)",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Garantia",
+                "Não": "END_Reparo"
+            }
         }
     }
 
-    # Obtém a pergunta atual
+    # Estados finais
+    final_states = {
+        "END_DevolverRecebimento": "Devolver para o Recebimento.",
+        "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
+        "END_DevolverPicking": "Devolver ao Picking e rejeitar SR.",
+        "END_TriagemJuridico": "Manter em triagem e acionar jurídico.",
+        "END_Bloqueio": "Bloqueio IMEI (Blacklist) / Bloqueio FMiP (Xiaomi e Apple).",
+        "END_Fabrica": "Encaminhar para fábrica.",
+        "END_Reparo": "Seguir caminho de reparo.",
+        "END_Garantia": "Encaminhar para garantia."
+    }
+
+    # Obter pergunta atual
     current_question = st.session_state.current_question
     question_data = questions.get(current_question)
 
     if question_data:
-        # Inicializa a resposta no estado, se ainda não existir
+        # Inicializar resposta no estado, se ainda não existir
         if current_question not in st.session_state.responses:
             st.session_state.responses[current_question] = None
 
-        # Exibe a pergunta atual
-        st.write(f"**Pergunta {current_question}:**")
+        # Exibir pergunta
+        st.write(f"**{question_data['question']}**")
         response = st.radio(
-            question_data["question"],
-            options=[""] + question_data["options"],  # Adiciona uma opção vazia inicial
+            "Escolha uma opção:",
+            options=[""] + question_data["options"],  # Adicionar opção vazia inicial
             index=0,  # Nenhuma seleção inicial
             key=f"q{current_question}",
-            label_visibility="collapsed"  # Oculta a opção vazia para o usuário
+            label_visibility="collapsed"  # Ocultar rótulo para opção vazia
         )
 
-        # Atualiza a resposta no estado apenas se válida
+        # Atualizar resposta no estado
         if response in question_data["options"]:
             st.session_state.responses[current_question] = response
 
-        # Habilita o botão "Próximo" apenas após uma seleção válida
+        # Habilitar botão "Próximo" apenas após uma resposta válida
         is_next_enabled = response in question_data["options"]
 
         if st.button("Próximo", disabled=not is_next_enabled):
-            # Avança para a próxima pergunta ou final
+            # Obter próximo passo
             next_step = question_data["next"].get(response)
-            if next_step is None:
-                st.error("Erro: A próxima etapa não foi encontrada.")
-            elif isinstance(next_step, int):
-                st.session_state.current_question = next_step
-            else:
-                st.success(f"Saída Final: {next_step}")
-                # Reseta o fluxo após a conclusão
-                st.session_state.current_question = 1
+            if next_step in final_states:
+                st.success(f"Estado Final: {final_states[next_step]}")
+                st.session_state.current_question = "Q1"
                 st.session_state.responses = {}
+            else:
+                st.session_state.current_question = next_step
     else:
-        st.warning("⚠️ Pergunta não encontrada ou fluxo chegou ao fim.")
-        st.button("Reiniciar", on_click=lambda: st.session_state.clear())
+        st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
+        if st.button("Reiniciar"):
+            st.session_state.current_question = "Q1"
+            st.session_state.responses = {}
