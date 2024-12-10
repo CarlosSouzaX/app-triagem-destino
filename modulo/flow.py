@@ -68,14 +68,20 @@ def runoff_flow():
 
         # Exibe a pergunta atual
         st.write(f"**Pergunta {current_question}:**")
+
+        # Adiciona uma opção inicial oculta para manter o campo vazio no início
+        options_with_empty = [""] + question_data["options"]
         response = st.radio(
             question_data["question"],
-            question_data["options"],
-            key=f"q{current_question}"
+            options_with_empty,
+            index=0,  # Inicializa com a opção vazia
+            key=f"q{current_question}",
+            label_visibility="collapsed"  # Esconde o rótulo para a opção vazia
         )
 
-        # Salva a resposta no estado
-        st.session_state.responses[current_question] = response
+        # Salva a resposta no estado, ignorando a opção vazia
+        if response:
+            st.session_state.responses[current_question] = response
 
         # Habilita o botão "Próximo" apenas se houver uma resposta válida
         is_next_enabled = response in question_data["options"]
