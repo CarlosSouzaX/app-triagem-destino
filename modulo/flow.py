@@ -111,7 +111,7 @@ def runoff_flow():
         }
     }
 
-     if "final_states" not in st.session_state:
+    if "final_states" not in st.session_state:
         st.session_state.final_states = {
             "END_DevolverRecebimento": "Devolver para o Recebimento.",
             "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
