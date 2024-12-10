@@ -38,6 +38,7 @@ with col1:
     device_input = st.text_input("Digite o número do Device:")
     
     if st.button("Buscar", key="buscar_device"):
+
     # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
 
@@ -108,8 +109,6 @@ with col1:
                         st.warning(f"⚠️ {campo.capitalize()}: {valor}")
                     elif status == "error":
                         st.error(f"❌ {campo.capitalize()}: {valor}")
-
-        
             
             # # Exibe dados da SR
             st.subheader("📄 Dados da SR")
@@ -149,15 +148,35 @@ with col1:
             if obs_cliente:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
-                st.warning("⚠️ **Sem observações registradas para este cliente.**")
-
-            
+                st.warning("⚠️ **Sem observações registradas para este cliente.**")    
 
         elif result["status"] == "warning":
             st.warning(f"⚠️ {result['message']}")
         elif result["status"] == "error":
             st.error(f"❌ {result['message']}")
-        
+
+    # Exibe os dados sempre que `detalhes_dispositivo` estiver presente no estado
+    if "detalhes_dispositivo" in st.session_state:
+        st.subheader("📱 Dados do Device")
+        for detalhe in st.session_state["detalhes_dispositivo"]:
+            campo = detalhe["campo"]
+            status = detalhe["status"]
+            valor = detalhe["valor"]
+
+            if status == "success":
+                st.success(f"✅ {campo.capitalize()}: **{valor}**")
+            elif status == "warning":
+                st.warning(f"⚠️ {campo.capitalize()}: {valor}")
+            elif status == "error":
+                st.error(f"❌ {campo.capitalize()}: {valor}")
+
+        # Mostrar a observação do cliente com destaque
+        st.subheader("📌 Observação do Cliente")
+        obs_cliente = st.session_state.get("obs_cliente", None)
+        if obs_cliente:
+            st.info(f"🔍 **Observação:** {obs_cliente}")
+        else:
+            st.warning("⚠️ **Sem observações registradas para este cliente.**")   
 
 # Divisor vertical na segunda coluna
 with col2:

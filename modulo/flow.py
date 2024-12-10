@@ -12,12 +12,12 @@ def carregar_modelos_ativos_json():
     """
     # Caminho absoluto para o arquivo JSON
     base_dir = os.path.dirname(__file__)  # Diretório atual do data_processor.py
-    caminho_modelos_ativos = os.path.join(base_dir, "../data/modelos_ativos.json")
+    caminho_modelos_ativos = os.path.join(base_dir, "../data/modelos_ativos_ln.json")
 
     try:
         with open(caminho_modelos_ativos, "r") as f:
             data = json.load(f)
-        return data.get("modelos_ativos", [])  # Retorna a lista de modelos ativos
+        return data.get("modelos_ativos_ln", [])  # Retorna a lista de modelos ativos
     except Exception as e:
         print(f"Erro ao carregar modelos ativos: {e}")
         return []
@@ -78,7 +78,8 @@ def runoff_flow(status_sr, device_brand, model):
                 "question": "O dispositivo está na Blacklist?",
                 "options": ["Sim", "Não"],
                 "next": {
-                    "Sim": "END_DevolverPicking" if status_sr in ["open", "arrived"] else "END_TriagemJuridico",
+                    #"Sim": "END_DevolverPicking" if status_sr in ["open", "arrived"] else "END_TriagemJuridico",
+                    "Sim": "END_DevolverPicking",
                     "Não": "Q4_FMiP" if device_brand in ["Apple", "Xiaomi"] else "Q4.2"
                 }
             },
@@ -86,7 +87,8 @@ def runoff_flow(status_sr, device_brand, model):
                 "question": "O dispositivo está com FMiP ativo?",
                 "options": ["Sim", "Não"],
                 "next": {
-                    "Sim": "END_DevolverPicking" if status_sr in ['open', 'arrived'] else "END_TriagemJuridico",
+                    #"Sim": "END_DevolverPicking" if status_sr in ['open', 'arrived'] else "END_TriagemJuridico",
+                    "Sim": "END_DevolverPicking",
                     "Não": "Q4.2"
                 }
             },
@@ -118,16 +120,16 @@ def runoff_flow(status_sr, device_brand, model):
                 "question": "Teve dano por impacto?",
                 "options": ["Sim", "Não"],
                 "next": {
-                    "Sim": "END_Reparo_Mesmo" if model in carregar_modelos_ativos_json() else "END_Reparo",
+                    "Sim": "END_Reparo_Mesmo",
                     "Não": "Q4.5"
                 }
             },
             "Q4.5": {
-                "question": "O device está no período de garantia? (Moto, Samsung e Apple)",
+                "question": "O device está no período de garantia?",
                 "options": ["Sim", "Não"],
                 "next": {
                     "Sim": "END_Garantia",
-                    "Não": "END_Reparo"
+                    "Não": "END_Reparo",
                 }
             }
         }

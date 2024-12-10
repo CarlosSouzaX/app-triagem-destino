@@ -141,6 +141,7 @@ def buscar_modelo_por_device(df, device_input):
             reincidente,
             runoff,
             mdm_payjoy,
+            marca,
             modelo,
             imei_status,
             status_sr,
@@ -156,7 +157,7 @@ def buscar_modelo_por_device(df, device_input):
         return {"status": "error", "message": "O valor inserido deve ser numérico."}
 
 
-def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff, mdm_payjoy, modelo, imei_status, status_sr, modelos_ativos):
+def determinar_esteira(parceiro, origem, garantia_funcional, reincidente, runoff, mdm_payjoy, marca, modelo, imei_status, status_sr, modelos_ativos):
     """
     Determina a Esteira de Atendimento com base nos dados coletados.
 
