@@ -7,11 +7,12 @@ def runoff_flow():
 
     st.title("Fluxo de Triagem - Funcional")
 
-    # Inicializa o estado da pergunta atual e respostas
+    # Inicializa o estado da pergunta atual e respostas, se não existir
     if "current_question" not in st.session_state:
-        st.session_state.current_question = "Q1"
+        st.session_state.current_question = "Q1"  # Define o estado inicial
+
     if "responses" not in st.session_state:
-        st.session_state.responses = {}
+        st.session_state.responses = {}  # Inicializa as respostas como dicionário vazio
 
     # Estrutura estática do fluxo
     questions = {
@@ -105,11 +106,11 @@ def runoff_flow():
     question_data = questions.get(current_question)
 
     if question_data:
-        # Inicializar resposta no estado, se ainda não existir
+        # Inicializa a resposta no estado, se ainda não existir
         if current_question not in st.session_state.responses:
             st.session_state.responses[current_question] = None
 
-        # Adicionar uma opção inicial visível "Selecione uma opção"
+        # Adiciona uma opção inicial visível "Selecione uma opção"
         options = ["Selecione uma opção"] + question_data["options"]
 
         # Exibir pergunta
