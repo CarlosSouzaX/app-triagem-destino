@@ -1,54 +1,73 @@
 import streamlit as st
 
 def runoff_flow():
+    """
+    Fluxo estático para RUNOFF, agora com navegabilidade por etapas.
+    """
+
     st.title("Fluxo de Formulário - RUNOFF")
 
-    # Pergunta 1
-    contract_expired = st.radio("O contrato expirou?", ["Sim", "Não"])
+    # Inicializa o estado da pergunta atual
+    if "current_question" not in st.session_state:
+        st.session_state.current_question = 1
 
-    if contract_expired == "Sim":
-        # Pergunta 2
-        has_balance = st.radio("Há saldo remanescente?", ["Sim", "Não"])
+    # Perguntas estáticas
+    questions = {
+        1: {
+            "question": "O contrato expirou?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": 2, "Não": 3 }
+        },
+        2: {
+            "question": "Há saldo remanescente?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": 4, "Não": 5 }
+        },
+        3: {
+            "question": "O cliente deseja renovar o contrato?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": 6, "Não": 7 }
+        },
+        4: {
+            "question": "O saldo será devolvido?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": 8, "Não": "END1" }
+        },
+        5: {
+            "question": "Deve ser arquivado sem saldo?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": "END2", "Não": "END3" }
+        },
+        6: {
+            "question": "Há uma oferta de renovação?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": "END4", "Não": "END5" }
+        },
+        7: {
+            "question": "Deseja oferecer um plano alternativo?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": "END6", "Não": "END7" }
+        },
+        8: {
+            "question": "O saldo foi processado?",
+            "options": ["Sim", "Não"],
+            "next": { "Sim": "END8", "Não": "END9" }
+        }
+    }
 
-        if has_balance == "Sim":
-            # Pergunta 4
-            refund_balance = st.radio("O saldo será devolvido?", ["Sim", "Não"])
-            
-            if refund_balance == "Sim":
-                # Pergunta 8
-                balance_processed = st.radio("O saldo foi processado?", ["Sim", "Não"])
-                
-                if balance_processed == "Sim":
-                    st.success("Saída: SALDO DEVOLVIDO E PROCESSO ENCERRADO.")
-                else:
-                    st.success("Saída: PROCESSAR SALDO PENDENTE.")
+    # Obtém a pergunta atual
+    current_question = st.session_state.current_question
+    question_data = questions.get(current_question)
+
+    if question_data:
+        # Exibe a pergunta atual
+        response = st.radio(question_data["question"], question_data["options"], key=f"q{current_question}")
+        if st.button("Próximo", key=f"next{current_question}"):
+            next_step = question_data["next"].get(response)
+            if isinstance(next_step, int):
+                st.session_state.current_question = next_step
             else:
-                st.success("Saída: ENCERRAR CONTRATO SEM DEVOLUÇÃO DE SALDO.")
-        else:
-            # Pergunta 5
-            archive_no_balance = st.radio("Deve ser arquivado sem saldo?", ["Sim", "Não"])
-            
-            if archive_no_balance == "Sim":
-                st.success("Saída: PROCESSO ARQUIVADO SEM SALDO.")
-            else:
-                st.success("Saída: VERIFICAR MOTIVO DO NÃO ARQUIVAMENTO.")
-    elif contract_expired == "Não":
-        # Pergunta 3
-        wants_renewal = st.radio("O cliente deseja renovar o contrato?", ["Sim", "Não"])
-        
-        if wants_renewal == "Sim":
-            # Pergunta 6
-            offer_renewal = st.radio("Há uma oferta de renovação?", ["Sim", "Não"])
-            
-            if offer_renewal == "Sim":
-                st.success("Saída: RENOVAÇÃO INICIADA.")
-            else:
-                st.success("Saída: SEM OFERTAS DISPONÍVEIS PARA RENOVAÇÃO.")
-        else:
-            # Pergunta 7
-            alternative_plan = st.radio("Deseja oferecer um plano alternativo?", ["Sim", "Não"])
-            
-            if alternative_plan == "Sim":
-                st.success("Saída: OFERTAR PLANO ALTERNATIVO.")
-            else:
-                st.success("Saída: SEM PLANOS DISPONÍVEIS, ACOMPANHAR CLIENTE.")
+                st.success(f"Saída Final: {next_step}")
+                st.session_state.current_question = 1  # Reinicia o fluxo
+    else:
+        st.error("Erro no fluxo. Contate o administrador.")
