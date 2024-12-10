@@ -157,9 +157,10 @@ with col3:
 
     esteira = obter_esteira_estado()
     if esteira:
-        st.info(f"🔄 Usando a Esteira de Atendimento: **{esteira}**")
+        st.info(f"🔄 Triagem a Esteira de Atendimento: **{esteira}**")
 
         perguntas = obter_entradas(esteira)
+        st.write(perguntas)
 
         if perguntas:
             progresso = st.session_state.get("progresso", 0)
@@ -195,4 +196,4 @@ with col3:
         else:
             st.warning("⚠️ Nenhuma entrada definida para esta esteira.")
     else:
-        st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca no campo acima.")
+        st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
