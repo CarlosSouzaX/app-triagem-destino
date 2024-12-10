@@ -11,7 +11,7 @@ def inicializar_estado():
     if "esteira" not in st.session_state:
         st.session_state["esteira"] = None
     if "detalhes_dispositivo" not in st.session_state:
-        st.session_state["detalhes_dispositivo"] = None  # Para armazenar dados do dispositivo
+        st.session_state["detalhes_dispositivo"] = []  # Inicializa como lista vazia
 
 
 def reset_estado():

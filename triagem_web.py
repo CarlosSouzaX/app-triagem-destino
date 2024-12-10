@@ -10,7 +10,7 @@ from modulo.triagem import (
     processar_resposta,
     obter_entradas,
 )
-
+from modulo.flow import runoff_flow
 
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
@@ -150,50 +150,15 @@ with col2:
 def obter_esteira_estado():
     """Retorna a esteira armazenada no estado, se disponível."""
     return st.session_state.get("esteira")
-
+    
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
 
-    esteira = obter_esteira_estado()
-    if esteira:
-        st.info(f"🔄 Triagem a Esteira de Atendimento: **{esteira}**")
+    
+    flow = obter_esteira_estado()
+    if flow == "RUNOFF":
+        runoff_flow()
 
-        perguntas = obter_entradas(esteira)
-        st.write(perguntas)
-
-        if perguntas:
-            progresso = st.session_state.get("progresso", 0)
-
-            # Exibir perguntas respondidas, se houver
-            if progresso > 0:
-                exibir_perguntas_respondidas(perguntas, st.session_state["respostas"])
-
-            st.write(f"DEBUG: Progresso: {st.session_state['progresso']}")
-            st.write(f"DEBUG: Respostas: {st.session_state['respostas']}")
-            st.write(f"DEBUG: Saída: {st.session_state.get('saida')}")
-
-
-            # Exibir a pergunta atual
-            if progresso < len(perguntas) and not st.session_state.get("saida"):
-                pergunta_atual = perguntas[progresso]
-                st.subheader(f"❓ Pergunta {progresso + 1}")
-                st.markdown(f"**{pergunta_atual['texto']}**")
-
-                col_sim, col_nao = st.columns(2)
-                with col_sim:
-                    if st.button("✅ Sim", key=f"sim_{progresso}"):
-                        st.session_state["respostas"].append("sim")
-                        processar_resposta(pergunta_atual, "sim")
-                with col_nao:
-                    if st.button("❌ Não", key=f"nao_{progresso}"):
-                        st.session_state["respostas"].append("não")
-                        processar_resposta(pergunta_atual, "nao")
-
-            # Exibir destino final, se alcançado
-            if st.session_state.get("saida"):
-                st.success(f"🏁 Destino Final: **{st.session_state['saida']}**")
-        else:
-            st.warning("⚠️ Nenhuma entrada definida para esta esteira.")
     else:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
