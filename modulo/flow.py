@@ -2,7 +2,7 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo Funcional para Triagem com perguntas e transições personalizadas.
+    Fluxo Funcional com opções não marcadas inicialmente.
     """
 
     st.title("Fluxo de Triagem - Funcional")
@@ -97,10 +97,7 @@ def runoff_flow():
         "END_AT": "Encaminhar para AT (Apple, Moto, Samsung, Infinix).",
         "END_DevolverPicking": "Devolver ao Picking e rejeitar SR.",
         "END_TriagemJuridico": "Manter em triagem e acionar jurídico.",
-        "END_Bloqueio": "Bloqueio IMEI (Blacklist) / Bloqueio FMiP (Xiaomi e Apple).",
-        "END_Fabrica": "Encaminhar para fábrica.",
-        "END_Reparo": "Seguir caminho de reparo.",
-        "END_Garantia": "Encaminhar para garantia."
+        "END_Bloqueio": "Bloqueio IMEI (Blacklist) / Bloqueio FMiP (Xiaomi e Apple)."
     }
 
     # Obter pergunta atual
@@ -112,22 +109,24 @@ def runoff_flow():
         if current_question not in st.session_state.responses:
             st.session_state.responses[current_question] = None
 
+        # Adicionar uma opção inicial visível "Selecione uma opção"
+        options = ["Selecione uma opção"] + question_data["options"]
+
         # Exibir pergunta
         st.write(f"**{question_data['question']}**")
         response = st.radio(
             "Escolha uma opção:",
-            options=[""] + question_data["options"],  # Adicionar opção vazia inicial
+            options=options,  # Adiciona opção inicial visível
             index=0,  # Nenhuma seleção inicial
-            key=f"q{current_question}",
-            label_visibility="collapsed"  # Ocultar rótulo para opção vazia
+            key=f"q{current_question}"
         )
 
-        # Atualizar resposta no estado
-        if response in question_data["options"]:
+        # Atualizar resposta no estado, ignorando a opção inicial
+        if response != "Selecione uma opção":
             st.session_state.responses[current_question] = response
 
         # Habilitar botão "Próximo" apenas após uma resposta válida
-        is_next_enabled = response in question_data["options"]
+        is_next_enabled = response != "Selecione uma opção"
 
         if st.button("Próximo", disabled=not is_next_enabled):
             # Obter próximo passo
