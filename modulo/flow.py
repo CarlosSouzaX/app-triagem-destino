@@ -2,60 +2,58 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo estático para RUNOFF com avanço apenas após clique no botão 'Próximo'.
+    Fluxo estático para RUNOFF com avanço imediato após clique no botão 'Próximo'.
     """
 
     st.title("Fluxo de Formulário - RUNOFF")
 
-    # Inicializa o estado da pergunta atual, respostas e flag de avanço
+    # Inicializa o estado da pergunta atual e respostas
     if "current_question" not in st.session_state:
         st.session_state.current_question = 1
     if "responses" not in st.session_state:
         st.session_state.responses = {}
-    if "advance_question" not in st.session_state:
-        st.session_state.advance_question = False
 
     # Estrutura estática do fluxo
     questions = {
         1: {
             "question": "O contrato expirou?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": 2, "Não": 3 }
+            "next": {"Sim": 2, "Não": 3}
         },
         2: {
             "question": "Há saldo remanescente?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": 4, "Não": 5 }
+            "next": {"Sim": 4, "Não": 5}
         },
         3: {
             "question": "O cliente deseja renovar o contrato?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": 6, "Não": 7 }
+            "next": {"Sim": 6, "Não": 7}
         },
         4: {
             "question": "O saldo será devolvido?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": 8, "Não": "END1" }
+            "next": {"Sim": 8, "Não": "END1"}
         },
         5: {
             "question": "Deve ser arquivado sem saldo?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": "END2", "Não": "END3" }
+            "next": {"Sim": "END2", "Não": "END3"}
         },
         6: {
             "question": "Há uma oferta de renovação?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": "END4", "Não": "END5" }
+            "next": {"Sim": "END4", "Não": "END5"}
         },
         7: {
             "question": "Deseja oferecer um plano alternativo?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": "END6", "Não": "END7" }
+            "next": {"Sim": "END6", "Não": "END7"}
         },
         8: {
             "question": "O saldo foi processado?",
             "options": ["Sim", "Não"],
-            "next": { "Sim": "END8", "Não": "END9" }
+            "next": {"Sim": "END8", "Não": "END9"}
         }
     }
 
@@ -79,25 +77,21 @@ def runoff_flow():
         )
 
         # Atualiza a resposta no estado apenas se válida
-        if response:
+        if response in question_data["options"]:
             st.session_state.responses[current_question] = response
 
         # Habilita o botão "Próximo" apenas após uma seleção válida
         is_next_enabled = response in question_data["options"]
 
-        # Botão Próximo
         if st.button("Próximo", disabled=not is_next_enabled):
             # Avança para a próxima pergunta ou final
-            st.session_state.advance_question = True
-
-    # Lógica de avanço para a próxima pergunta
-    if st.session_state.advance_question:
-        st.session_state.advance_question = False  # Reseta a flag
-        next_step = question_data["next"][st.session_state.responses[current_question]]
-        if isinstance(next_step, int):
-            st.session_state.current_question = next_step
-        else:
-            st.success(f"Saída Final: {next_step}")
-            # Reseta o fluxo após a conclusão
-            st.session_state.current_question = 1
-            st.session_state.responses = {}
+            next_step = question_data["next"][response]
+            if isinstance(next_step, int):
+                st.session_state.current_question = next_step
+            else:
+                st.success(f"Saída Final: {next_step}")
+                # Reseta o fluxo após a conclusão
+                st.session_state.current_question = 1
+                st.session_state.responses = {}
+    else:
+        st.error("Erro no fluxo. Contate o administrador.")
