@@ -2,7 +2,7 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo estático para RUNOFF com botão 'Próximo' habilitado apenas após uma resposta.
+    Fluxo estático para RUNOFF com transição correta entre perguntas.
     """
 
     st.title("Fluxo de Formulário - RUNOFF")
@@ -62,28 +62,25 @@ def runoff_flow():
     question_data = questions.get(current_question)
 
     if question_data:
-        # Inicializa uma variável para guardar a resposta no estado, se ainda não existir
+        # Inicializa a resposta como "None" no estado, se ainda não existir
         if current_question not in st.session_state.responses:
             st.session_state.responses[current_question] = None
 
         # Exibe a pergunta atual
         st.write(f"**Pergunta {current_question}:**")
-
-        # Adiciona uma opção inicial oculta para manter o campo vazio no início
-        options_with_empty = [""] + question_data["options"]
         response = st.radio(
             question_data["question"],
-            options_with_empty,
-            index=0,  # Inicializa com a opção vazia
+            options=[""] + question_data["options"],  # Adiciona uma opção vazia inicial
+            index=0,  # Nenhuma seleção inicial
             key=f"q{current_question}",
-            label_visibility="collapsed"  # Esconde o rótulo para a opção vazia
+            label_visibility="collapsed"  # Oculta a opção vazia para o usuário
         )
 
-        # Salva a resposta no estado, ignorando a opção vazia
+        # Atualiza a resposta no estado apenas se válida
         if response:
             st.session_state.responses[current_question] = response
 
-        # Habilita o botão "Próximo" apenas se houver uma resposta válida
+        # Habilita o botão "Próximo" apenas após uma seleção válida
         is_next_enabled = response in question_data["options"]
 
         if st.button("Próximo", key=f"next{current_question}", disabled=not is_next_enabled):
