@@ -2,17 +2,18 @@ import streamlit as st
 
 def runoff_flow():
     """
-    Fluxo Funcional com opções não marcadas inicialmente.
+    Fluxo Funcional com avanço imediato após clique no botão "Próximo".
     """
 
     st.title("Fluxo de Triagem - Funcional")
 
-    # Inicializa o estado da pergunta atual e respostas, se não existir
+    # Inicializa o estado da pergunta atual, respostas e flag de avanço
     if "current_question" not in st.session_state:
-        st.session_state.current_question = "Q1"  # Define o estado inicial
-
+        st.session_state.current_question = "Q1"
     if "responses" not in st.session_state:
-        st.session_state.responses = {}  # Inicializa as respostas como dicionário vazio
+        st.session_state.responses = {}
+    if "advance_flag" not in st.session_state:
+        st.session_state.advance_flag = False
 
     # Estrutura estática do fluxo
     questions = {
@@ -101,16 +102,33 @@ def runoff_flow():
         "END_Bloqueio": "Bloqueio IMEI (Blacklist) / Bloqueio FMiP (Xiaomi e Apple)."
     }
 
+    # Verifica se a flag de avanço está ativada
+    if st.session_state.advance_flag:
+        current_question = st.session_state.current_question
+        response = st.session_state.responses.get(current_question)
+
+        # Avança para o próximo estado
+        next_step = questions[current_question]["next"].get(response)
+        if next_step in final_states:
+            st.success(f"Estado Final: {final_states[next_step]}")
+            st.session_state.current_question = "Q1"
+            st.session_state.responses = {}
+        else:
+            st.session_state.current_question = next_step
+
+        # Reseta a flag de avanço
+        st.session_state.advance_flag = False
+
     # Obter pergunta atual
     current_question = st.session_state.current_question
     question_data = questions.get(current_question)
 
     if question_data:
-        # Inicializa a resposta no estado, se ainda não existir
+        # Inicializar resposta no estado, se ainda não existir
         if current_question not in st.session_state.responses:
             st.session_state.responses[current_question] = None
 
-        # Adiciona uma opção inicial visível "Selecione uma opção"
+        # Adicionar uma opção inicial visível "Selecione uma opção"
         options = ["Selecione uma opção"] + question_data["options"]
 
         # Exibir pergunta
@@ -130,16 +148,11 @@ def runoff_flow():
         is_next_enabled = response != "Selecione uma opção"
 
         if st.button("Próximo", disabled=not is_next_enabled):
-            # Obter próximo passo
-            next_step = question_data["next"].get(response)
-            if next_step in final_states:
-                st.success(f"Estado Final: {final_states[next_step]}")
-                st.session_state.current_question = "Q1"
-                st.session_state.responses = {}
-            else:
-                st.session_state.current_question = next_step
+            # Ativar a flag de avanço
+            st.session_state.advance_flag = True
     else:
         st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
         if st.button("Reiniciar"):
             st.session_state.current_question = "Q1"
             st.session_state.responses = {}
+            st.session_state.advance_flag = False
