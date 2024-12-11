@@ -136,14 +136,6 @@ with col1:
                         componente(f"✅ **Status SR:** **{valor}**")
                     else:  # Caso o status não esteja no mapeamento, exibe um aviso genérico
                         st.warning(f"⚠️ **Status SR:** {valor} (Status não reconhecido)")
-            
-            # Armazena dados no estado
-            st.session_state.update({
-                "esteira": result.get("esteira", None),
-                "status_sr": result.get("status_sr", None),
-                "marca": result.get("marca", None),
-                "modelo": result.get("modelo", None),
-            })
 
             # Mostrar a observação do cliente com destaque
             st.subheader("📌 Observação do Cliente")
@@ -188,6 +180,30 @@ def carregar_device_model():
     return st.session_state.get("modelo", None)
 
 # Terceira coluna: Triagem de Produtos
+if result and result.get("status") == "success":
+    with col3:
+        st.subheader("⚙️ Triagem de Produtos")
+        st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
+
+        # Executar o fluxo com os dados fornecidos
+        flow = st.session_state["esteira"]
+        device_brand = st.session_state["marca"]
+
+        if flow == "RUNOFF":
+            runoff_flow(device_brand)
+        elif flow == "GARANTIA FUNCIONAL":
+            warrantyOEM_flow(device_brand)
+        else:
+            st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+
+        # Exibir botão para reinicializar após o fluxo
+        if st.button("Finalizar e Reiniciar"):
+            st.success("Estado Final: Fluxo concluído.")
+            inicializar_estado()
+            st.session_state.clear()  # Limpa o estado para reiniciar
+
+"""      
+# Terceira coluna: Triagem de Produtos
 with col3:
     
 
@@ -210,3 +226,4 @@ with col3:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
     else:
         st.warning("⚠️ Status SR ou marca do dispositivo não encontrados. Verifique os dados.")
+"""
