@@ -180,32 +180,23 @@ def carregar_device_model():
     return st.session_state.get("modelo", None)
 
 # Terceira coluna: Triagem de Produtos
-if result and result.get("status") == "success":
-    with col3:
-        st.subheader("⚙️ Triagem de Produtos")
-        st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
+with col3:
+    st.subheader("⚙️ Triagem de Produtos")
+    st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
 
-        # Executar o fluxo com os dados fornecidos
-        flow = st.session_state["esteira"]
-        device_brand = st.session_state["marca"]
+    # Executar o fluxo com os dados fornecidos
+    flow = st.session_state["esteira"]
+    device_brand = st.session_state["marca"]
 
-        if flow == "RUNOFF":
-            runoff_flow(device_brand)
-        elif flow == "GARANTIA FUNCIONAL":
-            warrantyOEM_flow(device_brand)
-        else:
-            st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+    if flow == "RUNOFF":
+        runoff_flow(device_brand)
+    else:
+        st.warning("⚠️ Fluxo não reconhecido ou não definido.")
 
-        # Exibir botão para reinicializar após o fluxo
-        if st.button("Finalizar e Reiniciar"):
-            st.success("Estado Final: Fluxo concluído.")
-            inicializar_estado()
-            st.session_state.clear()  # Limpa o estado para reiniciar
 
 """      
 # Terceira coluna: Triagem de Produtos
 with col3:
-    
 
     # Obter valores do estado
     flow = obter_esteira_estado()
