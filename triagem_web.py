@@ -82,19 +82,19 @@ with col2:
     )
 
 # Terceira coluna: Triagem de Produtos
-if result and result.get("status") == "success":
-    with col3:
-        st.subheader("⚙️ Triagem de Produtos")
-        st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
+#if result and result.get("status") == "success":
+with col3:
+    st.subheader("⚙️ Triagem de Produtos")
+    st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
 
-        # Executar o fluxo com os dados fornecidos
-        flow = st.session_state["esteira"]
-        device_brand = st.session_state["marca"]
+    # Executar o fluxo com os dados fornecidos
+    flow = st.session_state["esteira"]
+    device_brand = st.session_state["marca"]
 
-        if flow == "RUNOFF":
-            runoff_flow(device_brand)
-        elif flow == "GARANTIA FUNCIONAL":
-            warrantyOEM_flow(device_brand)
-        else:
-            st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+    if flow == "RUNOFF":
+        runoff_flow(device_brand)
+    elif flow == "GARANTIA FUNCIONAL":
+        warrantyOEM_flow(device_brand)
+    else:
+        st.warning("⚠️ Fluxo não reconhecido ou não definido.")
 
