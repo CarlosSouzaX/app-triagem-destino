@@ -196,7 +196,7 @@ with col3:
     status_sr = carregar_status()
     device_brand = carregar_device_brand()
     model = carregar_device_model()
-    #st.write(f"Modelo: {model}")
+    st.write(f"Modelo: {model}")
     st.subheader("⚙️ Triagem de Produtos")
     st.info(f"🚀 Esteira de Atendimento: **{flow}**")
    
