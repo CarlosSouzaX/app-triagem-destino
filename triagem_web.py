@@ -93,8 +93,8 @@ with col3:
 
     if flow == "RUNOFF":
         runoff_flow(device_brand)
-    elif flow == "GARANTIA FUNCIONAL":
-        warrantyOEM_flow(device_brand)
+    #elif flow == "GARANTIA FUNCIONAL":
+       # warrantyOEM_flow(device_brand)
     else:
         st.warning("⚠️ Fluxo não reconhecido ou não definido.")
 
