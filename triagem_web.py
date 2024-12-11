@@ -190,6 +190,7 @@ def carregar_device_model():
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.header("⚙️ Triagem de Produtos")
+    
 
     # Obter valores do estado
     flow = obter_esteira_estado()
@@ -200,7 +201,7 @@ with col3:
 
     # Executar o fluxo com os dados fornecidos
     if flow == "RUNOFF":
-        runoff_flow(device_brand)
+        runoff_flow(device_brand, flow)
     elif flow == "GARANTIA FUNCIONAL":
         warrantyOEM_flow(device_brand)
     elif flow is None:
