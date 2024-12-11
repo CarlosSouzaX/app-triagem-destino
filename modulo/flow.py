@@ -43,12 +43,12 @@ def advance_to_next_question():
         st.session_state.current_question = next_step
 
 
-def runoff_flow(device_brand, flow):
+def runoff_flow(device_brand):
     """
     Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
 
-    st.subheader(f"⚙️ Triagem {flow}")
+    
 
     # Inicializa o estado
     if "current_question" not in st.session_state:

@@ -189,7 +189,6 @@ def carregar_device_model():
 
 # Terceira coluna: Triagem de Produtos
 with col3:
-    st.header("⚙️ Triagem de Produtos")
     
 
     # Obter valores do estado
@@ -197,7 +196,10 @@ with col3:
     status_sr = carregar_status()
     device_brand = carregar_device_brand()
     model = carregar_device_model()
-    st.write(f"Model: {model}")
+    #st.write(f"Modelo: {model}")
+    st.info(f"🚀 Esteira de Atendimento: **{flow}**")
+    st.subheader(f"⚙️ Triagem {flow}")
+
 
     # Executar o fluxo com os dados fornecidos
     if flow == "RUNOFF":
