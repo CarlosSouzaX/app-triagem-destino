@@ -3,6 +3,7 @@ from modulo.verificar_imei import verificar_imei
 import os
 import json
 
+
 def carregar_modelos_ativos_json():
     """
     Carrega a lista de modelos ativos para reparo de um arquivo JSON localizado na pasta 'data'.

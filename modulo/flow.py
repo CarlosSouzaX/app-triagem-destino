@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+from modulo.triagem import inicializar_estado
 
 
 def carregar_modelos_ativos_json():
@@ -37,6 +38,7 @@ def advance_to_next_question():
     if next_step in final_states:
         st.success(f"Estado Final: {final_states[next_step]}")
         # Reinicia o fluxo
+
         st.session_state.current_question = "Q1"
         st.session_state.responses = {}
     else:
@@ -177,9 +179,11 @@ def runoff_flow(device_brand):
         )
     else:
         st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
-        if st.button("Reiniciar"):
-            st.session_state.current_question = "Q1"
-            st.session_state.responses = {}
+        # Exibir botão para reinicializar após o fluxo
+        if st.button("Finalizar e Reiniciar"):
+            st.success("Estado Final: Fluxo concluído.")
+            inicializar_estado()
+            st.session_state.clear()  # Limpa o estado para reiniciar
 
 def warrantyOEM_flow(device_brand):
     """

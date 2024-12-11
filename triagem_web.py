@@ -93,10 +93,6 @@ if result and result.get("status") == "success":
 
         if flow == "RUNOFF":
             runoff_flow(device_brand)
-            # Exibir botão para reinicializar após o fluxo
-            if st.button("Finalizar e Reiniciar"):
-                inicializar_estado()
-                st.session_state.clear()  # Limpa o estado para reiniciar
         elif flow == "GARANTIA FUNCIONAL":
             warrantyOEM_flow(device_brand)
         else:
