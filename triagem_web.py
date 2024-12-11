@@ -194,27 +194,3 @@ with col3:
         st.warning("⚠️ Fluxo não reconhecido ou não definido.")
 
 
-"""      
-# Terceira coluna: Triagem de Produtos
-with col3:
-
-    # Obter valores do estado
-    flow = obter_esteira_estado()
-    status_sr = carregar_status()
-    device_brand = carregar_device_brand()
-    model = carregar_device_model()
-    #st.write(f"Modelo: {model}")
-    st.subheader("⚙️ Triagem de Produtos")
-    st.info(f"🚀 Esteira de Atendimento: **{flow}**")
-   
-
-
-    # Executar o fluxo com os dados fornecidos
-    if flow == "RUNOFF":
-        runoff_flow(device_brand)
-  
-    elif flow is None:
-        st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
-    else:
-        st.warning("⚠️ Status SR ou marca do dispositivo não encontrados. Verifique os dados.")
-"""
