@@ -28,12 +28,15 @@ col1, col2, col3 = st.columns([1, 0.1, 1])  # Ajustar proporções das colunas
 with col1:
     st.header("🔍 Buscar Modelo pelo Device")
     device_input = st.text_input("Digite o número do Device:")
-    
+
     if st.button("Buscar", key="buscar_device"):
         # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
 
-        # Verifica o status geral
+        # Salva o resultado no estado
+        st.session_state["result"] = result
+
+        # Processa o resultado
         if result["status"] == "success":
             st.success("✅ Dispositivo encontrado com sucesso!")
 
@@ -65,10 +68,9 @@ with col1:
                 st.info(f"🔍 **Observação:** {obs_cliente}")
             else:
                 st.warning("⚠️ **Sem observações registradas para este cliente.**")
-        elif result["status"] == "warning":
-            st.warning(f"⚠️ {result['message']}")
-        elif result["status"] == "error":
-            st.error(f"❌ {result['message']}")
+
+# Recuperar o resultado do estado
+result = st.session_state.get("result", None)
 
 # Divisor vertical na segunda coluna
 with col2:
@@ -80,7 +82,7 @@ with col2:
     )
 
 # Terceira coluna: Triagem de Produtos
-if "result" in locals() and st.session_state.get("esteira") and result.get("status") == "success":
+if result and result.get("status") == "success":
     with col3:
         st.subheader("⚙️ Triagem de Produtos")
         st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
@@ -100,3 +102,4 @@ if "result" in locals() and st.session_state.get("esteira") and result.get("stat
         if st.button("Finalizar e Reiniciar"):
             st.success("Estado Final: Fluxo concluído.")
             inicializar_estado()
+            st.session_state.clear()  # Limpa o estado para reiniciar
