@@ -14,9 +14,11 @@ from modulo.flow import (
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
 
-# Inicializa o estado
-inicializar_estado()
-
+# Inicializa o estado se não estiver configurado
+if "inicializado" not in st.session_state:
+    inicializar_estado()
+    st.session_state["inicializado"] = True
+    st.session_state["fluxo_finalizado"] = False
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
@@ -182,15 +184,27 @@ def carregar_device_model():
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.subheader("⚙️ Triagem de Produtos")
-    st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
 
-    # Executar o fluxo com os dados fornecidos
-    flow = st.session_state["esteira"]
-    device_brand = st.session_state["marca"]
+    if "esteira" in st.session_state and st.session_state["esteira"]:
+        st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
 
-    if flow == "RUNOFF":
-        runoff_flow(device_brand)
+        # Executar o fluxo com os dados fornecidos
+        flow = st.session_state["esteira"]
+        device_brand = st.session_state.get("marca", None)
+
+        if flow == "RUNOFF":
+            runoff_flow(device_brand)
+            st.session_state["fluxo_finalizado"] = True
+        else:
+            st.warning("⚠️ Fluxo não reconhecido ou não definido.")
     else:
-        st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+        st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
 
-
+# Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
+if st.session_state.get("fluxo_finalizado", False):
+    if st.button("Reiniciar"):
+        inicializar_estado()
+        st.session_state["inicializado"] = False
+        st.session_state["fluxo_finalizado"] = False
+        st.session_state["esteira"] = None
+        st.success("Fluxo reiniciado com sucesso!")
