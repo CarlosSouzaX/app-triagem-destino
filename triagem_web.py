@@ -80,7 +80,7 @@ with col2:
     )
 
 # Terceira coluna: Triagem de Produtos
-if st.session_state.get("esteira") and result.get("status") == "success":
+if "result" in locals() and st.session_state.get("esteira") and result.get("status") == "success":
     with col3:
         st.subheader("⚙️ Triagem de Produtos")
         st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
