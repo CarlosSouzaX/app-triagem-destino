@@ -205,9 +205,10 @@ with col3:
     # Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
     if st.session_state.get("fluxo_finalizado", False):
         if st.button("Reiniciar"):
-            inicializar_estado()
+            
             st.session_state["inicializado"] = False
             st.session_state["fluxo_finalizado"] = False
             st.session_state["esteira"] = None
             st.session_state["current_question"] = "Q1"  # Reinicia a primeira pergunta
             st.success("Fluxo reiniciado com sucesso!")
+            inicializar_estado()
