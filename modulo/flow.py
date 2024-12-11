@@ -38,6 +38,12 @@ def advance_to_next_question():
     if next_step in final_states:
         st.success(f"Estado Final: {final_states[next_step]}")
         # Reinicia o fluxo
+        # Exibir botão para reinicializar após o fluxo
+        if st.button("Finalizar e Reiniciar"):
+            st.success("Estado Final: Fluxo concluído.")
+            inicializar_estado()
+            st.session_state.clear()  # Limpa o estado para reiniciar
+        
 
         st.session_state.current_question = "Q1"
         st.session_state.responses = {}
@@ -177,10 +183,7 @@ def runoff_flow(device_brand):
             disabled=not is_next_enabled,
             on_click=advance_to_next_question
         )
-        st.button(
-            "Reiniciar",
-            on_click=inicializar_estado()
-        )
+    
     else:
         st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
         # Exibir botão para reinicializar após o fluxo
