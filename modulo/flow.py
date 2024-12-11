@@ -48,8 +48,6 @@ def runoff_flow(device_brand):
     Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
 
-    
-
     # Inicializa o estado
     if "current_question" not in st.session_state:
         st.session_state.current_question = "Q1"
@@ -187,8 +185,6 @@ def warrantyOEM_flow(device_brand):
     """
     Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
-
-    st.header(f"⚙️ Triagem Fluxo de Triagem") 
 
     # Inicializa o estado
     if "current_question" not in st.session_state:

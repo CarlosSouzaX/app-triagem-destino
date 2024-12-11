@@ -197,8 +197,9 @@ with col3:
     device_brand = carregar_device_brand()
     model = carregar_device_model()
     #st.write(f"Modelo: {model}")
+    st.subheader("⚙️ Triagem de Produtos")
     st.info(f"🚀 Esteira de Atendimento: **{flow}**")
-    st.subheader(f"⚙️ Triagem {flow}")
+   
 
 
     # Executar o fluxo com os dados fornecidos
