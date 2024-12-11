@@ -8,8 +8,7 @@ from modulo.triagem import (
 )
 
 from modulo.flow import (
-    runoff_flow,
-    warrantyOEM_flow
+    runoff_flow
 )
 
 # Configurar o layout para "wide"
