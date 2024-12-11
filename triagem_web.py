@@ -11,7 +11,10 @@ from modulo.triagem import (
     obter_entradas,
 )
 
-from modulo.flow import runoff_flow
+from modulo.flow import (
+    runoff_flow,
+    warrantyOEM_flow
+)
 
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
@@ -27,7 +30,7 @@ USECOLS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 df = carregar_dados_gsheets(SHEET_URL, WORKSHEET, USECOLS)
 
 # Título principal
-st.title("📋 Sistema de Triagem")
+st.title("📋 Device Verification Workflow")
 
 # Layout com colunas para incluir divisor vertical
 col1, col2, col3 = st.columns([1, 0.1, 1])  # Ajustar proporções das colunas
@@ -196,8 +199,10 @@ with col3:
     st.write(f"Model: {model}")
 
     # Executar o fluxo com os dados fornecidos
-    if flow == "RUNOFF" and status_sr is not None:
-        runoff_flow(status_sr, device_brand, model)
+    if flow == "RUNOFF":
+        runoff_flow(device_brand)
+    elif flow == "GARANTIA FUNCIONAL":
+        warrantyOEM_flow(device_brand)
     elif flow is None:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
     else:
