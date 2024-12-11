@@ -177,6 +177,10 @@ def runoff_flow(device_brand):
             disabled=not is_next_enabled,
             on_click=advance_to_next_question
         )
+        st.button(
+            "Reiniciar",
+            on_click=inicializar_estado()
+        )
     else:
         st.warning("⚠️ Fluxo finalizado ou inválido. Reinicie o fluxo.")
         # Exibir botão para reinicializar após o fluxo
