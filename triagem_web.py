@@ -4,7 +4,7 @@ from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
 from modulo.data_processor import buscar_modelo_por_device
 from modulo.triagem import inicializar_estado
-from modulo.flow import runoff_flow, warrantyOEM_flow
+from modulo.flow import runoff_flow
 
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
