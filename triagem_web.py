@@ -201,12 +201,13 @@ with col3:
     else:
         st.warning("⚠️ Nenhuma esteira foi selecionada. Realize uma busca do device no campo disponível.")
 
-# Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
-if st.session_state.get("fluxo_finalizado", False):
-    if st.button("Reiniciar"):
-        inicializar_estado()
-        st.session_state["inicializado"] = False
-        st.session_state["fluxo_finalizado"] = False
-        st.session_state["esteira"] = None
-        st.session_state["current_question"] = "Q1"  # Reinicia a primeira pergunta
-        st.success("Fluxo reiniciado com sucesso!")
+
+    # Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
+    if st.session_state.get("fluxo_finalizado", False):
+        if st.button("Reiniciar"):
+            inicializar_estado()
+            st.session_state["inicializado"] = False
+            st.session_state["fluxo_finalizado"] = False
+            st.session_state["esteira"] = None
+            st.session_state["current_question"] = "Q1"  # Reinicia a primeira pergunta
+            st.success("Fluxo reiniciado com sucesso!")
