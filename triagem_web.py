@@ -91,15 +91,27 @@ if result and result.get("status") == "success":
         flow = st.session_state["esteira"]
         device_brand = st.session_state["marca"]
 
-        if flow == "RUNOFF":
-            runoff_flow(device_brand)
-        elif flow == "GARANTIA FUNCIONAL":
-            warrantyOEM_flow(device_brand)
-        else:
-            st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+        # Inicializar estado de conclusão do fluxo
+        if "flow_completed" not in st.session_state:
+            st.session_state["flow_completed"] = False
 
-        # Exibir botão para reinicializar após o fluxo
-        if st.button("Finalizar e Reiniciar"):
-            st.success("Estado Final: Fluxo concluído.")
-            inicializar_estado()
-            st.session_state.clear()  # Limpa o estado para reiniciar
+        # Executar os fluxos específicos
+        if not st.session_state["flow_completed"]:
+            if flow == "RUNOFF":
+                runoff_flow(device_brand)
+            elif flow == "GARANTIA FUNCIONAL":
+                warrantyOEM_flow(device_brand)
+            else:
+                st.warning("⚠️ Fluxo não reconhecido ou não definido.")
+
+        # Verificar se o fluxo foi concluído
+        # Aqui, simula a conclusão ao final dos fluxos; ajuste conforme a lógica do fluxo
+        if st.session_state.get("current_question") in st.session_state.get("final_states", {}):
+            st.session_state["flow_completed"] = True
+
+        # Exibir botão "Finalizar e Reiniciar" somente após conclusão
+        if st.session_state["flow_completed"]:
+            if st.button("Finalizar e Reiniciar"):
+                st.success("Estado Final: Fluxo concluído.")
+                inicializar_estado()
+                st.session_state.clear()  # Limpa o estado para reiniciar
