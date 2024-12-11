@@ -203,7 +203,7 @@ with col3:
 
     # Executar o fluxo com os dados fornecidos
     if flow == "RUNOFF":
-        runoff_flow(device_brand, flow)
+        runoff_flow(device_brand)
     elif flow == "GARANTIA FUNCIONAL":
         warrantyOEM_flow(device_brand)
     elif flow is None:
