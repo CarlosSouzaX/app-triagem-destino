@@ -9,7 +9,7 @@ def inicializar_estado():
         "inicializado": True,
         "fluxo_finalizado": False,
         # Estados do fluxo
-        "current_question": "Q1",
+        "current_question": "",
         "responses": {},
         # Estados do dispositivo
         "device_input": "",
