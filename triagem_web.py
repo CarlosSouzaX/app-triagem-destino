@@ -35,7 +35,7 @@ with col1:
     # Campo de texto vinculado ao estado
     device_input = st.text_input("Digite o número do Device:", value=obter_estado("device_input"), key="device_input")
     
-    if st.button("Buscar", key="buscar_device"):
+    if st.button("Buscar", key="device_input"):
 
         # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
