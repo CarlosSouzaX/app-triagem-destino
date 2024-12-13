@@ -32,8 +32,6 @@ col1, col2, col3 = st.columns([1, 0.1, 1])  # Ajustar proporções das colunas
 with col1:
     st.header("🔍 Buscar Modelo pelo Device")
 
-
-    
     # Campo de texto vinculado ao estado
     device_input = st.text_input("Digite o número do Device:")
     

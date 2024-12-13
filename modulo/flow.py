@@ -25,7 +25,7 @@ def advance_to_next_question():
     """
     Avança para a próxima pergunta ou exibe o estado final.
     """
-    current_question = st.session_state.current_question
+    current_question = st.session_state.get(current_question)
     questions = st.session_state.questions
     final_states = st.session_state.final_states
 
@@ -43,86 +43,82 @@ def runoff_flow(device_brand):
     """
     Fluxo Funcional com avanço imediato no botão "Próximo" e validação do status SR.
     """
-    if "current_question" not in st.session_state:
-        st.session_state.current_question = "Q1"
-    if "responses" not in st.session_state:
-        st.session_state.responses = {}
-    if "questions" not in st.session_state:
-        st.session_state.questions = {
-            "Q1": {
-                "question": "O IMEI está correto?",
-                "options": ["Sim", "Não", "Não Sei"],
-                "next": {
-                    "Sim": "Q2",
-                    "Não": "END_DevolverRecebimento",
-                    "Não Sei": "END_AT"
-                }
-            },
-            "Q2": {
-                "question": "O Modelo está correto?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "Q3",
-                    "Não": "END_DevolverRecebimento"
-                }
-            },
-            "Q3": {
-                "question": "O dispositivo está na Blacklist?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_DevolverPicking",
-                    "Não": "Q4_FMiP" if device_brand in ["Apple", "Xiaomi"] else "Q4.2"
-                }
-            },
-            "Q4_FMiP": {
-                "question": "O dispositivo está com FMiP ativo?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_DevolverPicking",
-                    "Não": "Q4.2"
-                }
-            },
-            "Q4.2": {
-                "question": "Teve contato líquido?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_Fabrica",
-                    "Não": "Q4.3"
-                }
-            },
-            "Q4.3": {
-                "question": "O sensor de umidade (gaveta do chip) está ativado?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_Fabrica",
-                    "Não": "Q4.4"
-                }
-            },
-            "Q4.4": {
-                "question": "Tem evidências de carbonização?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_Fabrica",
-                    "Não": "Q4.1"
-                }
-            },
-            "Q4.1": {
-                "question": "Teve dano por impacto?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_Reparo_Mesmo",
-                    "Não": "Q4.5"
-                }
-            },
-            "Q4.5": {
-                "question": "O device está no período de garantia?",
-                "options": ["Sim", "Não"],
-                "next": {
-                    "Sim": "END_Garantia",
-                    "Não": "END_Reparo",
-                }
+
+    st.session_state.questions = {
+        "Q1": {
+            "question": "O IMEI está correto?",
+            "options": ["Sim", "Não", "Não Sei"],
+            "next": {
+                "Sim": "Q2",
+                "Não": "END_DevolverRecebimento",
+                "Não Sei": "END_AT"
+            }
+        },
+        "Q2": {
+            "question": "O Modelo está correto?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "Q3",
+                "Não": "END_DevolverRecebimento"
+            }
+        },
+        "Q3": {
+            "question": "O dispositivo está na Blacklist?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_DevolverPicking",
+                "Não": "Q4_FMiP" if device_brand in ["Apple", "Xiaomi"] else "Q4.2"
+            }
+        },
+        "Q4_FMiP": {
+            "question": "O dispositivo está com FMiP ativo?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_DevolverPicking",
+                "Não": "Q4.2"
+            }
+        },
+        "Q4.2": {
+            "question": "Teve contato líquido?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.3"
+            }
+        },
+        "Q4.3": {
+            "question": "O sensor de umidade (gaveta do chip) está ativado?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.4"
+            }
+        },
+        "Q4.4": {
+            "question": "Tem evidências de carbonização?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Fabrica",
+                "Não": "Q4.1"
+            }
+        },
+        "Q4.1": {
+            "question": "Teve dano por impacto?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Reparo_Mesmo",
+                "Não": "Q4.5"
+            }
+        },
+        "Q4.5": {
+            "question": "O device está no período de garantia?",
+            "options": ["Sim", "Não"],
+            "next": {
+                "Sim": "END_Garantia",
+                "Não": "END_Reparo",
             }
         }
+    }
 
     if "final_states" not in st.session_state:
         st.session_state.final_states = {
