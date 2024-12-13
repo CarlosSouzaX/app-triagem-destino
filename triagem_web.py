@@ -125,7 +125,6 @@ with col1:
 
                 if campo == "status_sr":
                     componente = status_componentes.get(valor)
-                    # Armazenar a o status da SR no estado para uso posterior
                     st.session_state["status_sr"] = valor
                     if componente:  # Se o status estiver mapeado, exibe com o componente correspondente
                         componente(f"✅ **Status SR:** **{valor}**")
@@ -164,12 +163,11 @@ with col3:
         st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
 
         # Executar o fluxo com os dados fornecidos
-        flow =  esteira
         device_brand = obter_estado("marca")
 
-        if flow == "RUNOFF":
+        if esteira == "RUNOFF":
             runoff_flow(device_brand)
-            st.session_state["fluxo_finalizado"] = True
+            #st.session_state["fluxo_finalizado"] = True
         else:
             st.warning("⚠️ Fluxo não reconhecido ou não definido.")
     else:
