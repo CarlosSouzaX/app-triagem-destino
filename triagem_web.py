@@ -3,9 +3,7 @@ import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 from modulo.data_loader import carregar_dados_gsheets
 from modulo.data_processor import buscar_modelo_por_device
-from modulo.triagem import (
-    inicializar_estado
-)
+from modulo.state_manager import inicializar_estado, resetar_estado, obter_estado
 
 from modulo.flow import (
     runoff_flow
@@ -15,14 +13,8 @@ from modulo.flow import (
 st.set_page_config(layout="wide", page_title="Minha Aplicação", page_icon="📊")
 
 # Inicializa o estado se não estiver configurado
-if "inicializado" not in st.session_state:
-    inicializar_estado()
-    st.session_state["inicializado"] = True
-    st.session_state["fluxo_finalizado"] = False
-    
-# Garante que `current_question` esteja inicializado
-if "current_question" not in st.session_state:
-    st.session_state["current_question"] = "Q1"  # Define a pergunta inicial
+inicializar_estado()
+
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
 WORKSHEET = "Triagem"
@@ -45,10 +37,6 @@ with col1:
 
     # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
-
-         # Exibe o resultado completo na tela
-        #st.write("🔍 Resultado da busca:")
-        #st.write(result)
 
         # Mapeamento de cores e ícones para o status_sr
         status_componentes = {
@@ -168,33 +156,18 @@ with col2:
         unsafe_allow_html=True,
     )
 
-# Função auxiliar para obter a esteira do estado
-def obter_esteira_estado():
-    """Retorna a esteira armazenada no estado, se disponível."""
-    return st.session_state.get("esteira", None)  # Retorna None se não existir
-
-def carregar_status():
-    """Retorna o status da SR armazenado no estado, se disponível."""
-    return st.session_state.get("status_sr", None)
-
-def carregar_device_brand():
-    """Retorna a marca do dispositivo armazenada no estado, se disponível."""
-    return st.session_state.get("marca", None)
-
-def carregar_device_model():
-    """Retorna o modelo do dispositivo armazenado no estado, se disponível."""
-    return st.session_state.get("modelo", None)
-
 # Terceira coluna: Triagem de Produtos
 with col3:
     st.subheader("⚙️ Triagem de Produtos")
 
-    if "esteira" in st.session_state and st.session_state["esteira"]:
-        st.info(f"🚀 Esteira de Atendimento: **{st.session_state['esteira']}**")
+    esteira = obter_estado("esteira")
+
+    if esteira:
+        st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
 
         # Executar o fluxo com os dados fornecidos
-        flow = st.session_state["esteira"]
-        device_brand = st.session_state.get("marca", None)
+        flow =  esteira
+        device_brand = obter_estado("marca")
 
         if flow == "RUNOFF":
             runoff_flow(device_brand)
@@ -206,12 +179,6 @@ with col3:
 
 
     # Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
-    if st.session_state.get("fluxo_finalizado", False):
+    if obter_estado("fluxo_finalizado"):
         if st.button("Reiniciar"):
-            
-            st.session_state["inicializado"] = False
-            st.session_state["fluxo_finalizado"] = False
-            st.session_state["esteira"] = None
-            st.session_state["current_question"] = "Q1"  # Reinicia a primeira pergunta
-            st.success("Fluxo reiniciado com sucesso!")
-            inicializar_estado()
+            resetar_estado()

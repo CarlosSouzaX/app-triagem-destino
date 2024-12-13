@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 import json
-from modulo.triagem import inicializar_estado
+from modulo.state_manager import inicializar_estado
 
 def carregar_modelos_ativos_json():
     """
