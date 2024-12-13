@@ -8,9 +8,6 @@ def inicializar_estado():
         # Estados globais
         "inicializado": True,
         "fluxo_finalizado": False,
-        # Estados do fluxo
-        "current_question": "",
-        "responses": {},
         # Estados do dispositivo
         "device_input": "",
         "esteira": None,
@@ -19,6 +16,9 @@ def inicializar_estado():
         "status_sr": None,
         # Outros estados
         "observacao_cliente": "",
+        # Estados do fluxo
+        "current_question": "Q1",
+        "responses": {},
     }
     for chave, valor in estados_padrao.items():
         if chave not in st.session_state:
