@@ -19,6 +19,9 @@ if "inicializado" not in st.session_state:
     inicializar_estado()
     st.session_state["inicializado"] = True
     st.session_state["fluxo_finalizado"] = False
+    
+# Garante que `current_question` esteja inicializado
+if "current_question" not in st.session_state:
     st.session_state["current_question"] = "Q1"  # Define a pergunta inicial
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1B34FqK4aJWeJtm4RLLN2AqlBJ-n6AASRIKn6UrnaK0k/edit?gid=698133322#gid=698133322"
