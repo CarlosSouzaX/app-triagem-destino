@@ -50,7 +50,7 @@ def buscar_modelo_por_device(df, device_input):
         # Filtra pelo Device
         resultado = df.loc[df["device"] == device_input_float, df.columns[1:]]
         if resultado.empty:
-            return {"status": "error", "message": f"Device '{device_input}' não encontrado no DataFrame."}
+            return {"status": "error", "message": f"Device '{device_input}' não encontrado no Banco de Dados."}
 
         # Inicializa o resultado parcial
         resultado_final = {"status": "success", "detalhes": []}
