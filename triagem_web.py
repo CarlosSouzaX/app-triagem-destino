@@ -37,7 +37,7 @@ with col1:
     
     if st.button("Buscar", key="buscar_device"):
 
-    # Chama a função de busca
+        # Chama a função de busca
         result = buscar_modelo_por_device(df, device_input)
 
         # Mapeamento de cores e ícones para o status_sr
@@ -62,13 +62,12 @@ with col1:
             # Exibe a validação da consulta
             st.success("✅ Dispositivo encontrado com sucesso!")
 
-            # Exibe a Esteira de Atendimento
-            esteira = result.get("esteira", "Não definida")
-            st.info(f"🚀 Esteira de Atendimento: **{esteira}**")
-
             # Armazenar a esteira no estado para uso posterior
-            st.session_state["esteira"] = esteira
+            if isinstance(result, dict):
+                st.session_state["esteira"] = result.get("esteira", "Não definida")
+                esteira = result.get("esteira", "Não definida")
 
+            
             # Exibe dados do Device
             st.subheader("📱 Dados do Device")
             for detalhe in result.get("detalhes", []):
