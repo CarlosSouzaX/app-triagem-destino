@@ -25,7 +25,7 @@ def advance_to_next_question():
     """
     Avança para a próxima pergunta ou exibe o estado final.
     """
-    current_question = st.session_state.get(current_question)
+    current_question = st.session_state.current_question
     questions = st.session_state.questions
     final_states = st.session_state.final_states
 
