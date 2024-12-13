@@ -178,3 +178,4 @@ with col3:
     if obter_estado("fluxo_finalizado"):
         if st.button("Reiniciar"):
             resetar_estado(grupo="fluxo")
+            resetar_estado(grupo="dispositivo")
