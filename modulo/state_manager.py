@@ -13,6 +13,7 @@ def inicializar_estado():
         "marca": None,
         "modelo": None,
         "status_sr": None,
+        "device_input": "",  # Adiciona o controle do campo de texto
     }
     for chave, valor in estados_padrao.items():
         if chave not in st.session_state:

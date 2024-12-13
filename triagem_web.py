@@ -31,7 +31,9 @@ col1, col2, col3 = st.columns([1, 0.1, 1])  # Ajustar proporções das colunas
 # Primeira coluna: Buscar Modelo pelo Device
 with col1:
     st.header("🔍 Buscar Modelo pelo Device")
-    device_input = st.text_input("Digite o número do Device:")
+    
+    # Campo de texto vinculado ao estado
+    device_input = st.text_input("Digite o número do Device:", value=obter_estado("device_input"), key="device_input")
     
     if st.button("Buscar", key="buscar_device"):
 
