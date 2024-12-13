@@ -3,6 +3,7 @@ import os
 import json
 from modulo.state_manager import inicializar_estado
 
+
 def carregar_modelos_ativos_json():
     """
     Carrega a lista de modelos ativos para reparo de um arquivo JSON localizado na pasta 'data'.
@@ -25,7 +26,10 @@ def advance_to_next_question():
     """
     Avança para a próxima pergunta ou exibe o estado final.
     """
+
     current_question = st.session_state.current_question
+    st.write("Estado atual:", st.session_state)
+
     questions = st.session_state.questions
     final_states = st.session_state.final_states
 
