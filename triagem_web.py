@@ -146,9 +146,6 @@ with col1:
         elif result["status"] == "error":
             st.error(f"❌ {result['message']}")
 
-
-
-
 # Divisor vertical na segunda coluna
 with col2:
     st.markdown(
@@ -183,4 +180,4 @@ with col3:
     # Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
     if obter_estado("fluxo_finalizado"):
         if st.button("Reiniciar"):
-            resetar_estado()
+            resetar_estado(grupo="fluxo")
