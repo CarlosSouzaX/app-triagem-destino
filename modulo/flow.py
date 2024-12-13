@@ -166,6 +166,8 @@ def runoff_flow(device_brand):
         st.warning("⚠️ Fluxo finalizado.")
         st.session_state["fluxo_finalizado"] = True  # Marca o fluxo como finalizado
 
+
+"""
 # Reinicializar estado
 if "fluxo_finalizado" not in st.session_state:
     st.session_state["fluxo_finalizado"] = False
@@ -177,3 +179,4 @@ if st.session_state["fluxo_finalizado"]:
         st.session_state["responses"] = {}
         st.session_state["fluxo_finalizado"] = False
         st.success("Fluxo reiniciado!")
+"""

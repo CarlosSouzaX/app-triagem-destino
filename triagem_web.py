@@ -175,7 +175,6 @@ with col3:
 
 
     # Exibir botão "Reiniciar" apenas se o fluxo estiver finalizado
-    if obter_estado("fluxo_finalizado"):
-        if st.button("Reiniciar"):
-            resetar_estado(grupo="fluxo")
-            resetar_estado(grupo="dispositivo")
+    if obter_estado("fluxo_finalizado") and st.button("Reiniciar"):
+        resetar_estado(grupo="fluxo")
+        resetar_estado(grupo="dispositivo")
